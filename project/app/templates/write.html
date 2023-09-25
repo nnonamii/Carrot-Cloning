@@ -1,5 +1,5 @@
-{% comment %} {% load custom_filter%} {% endcomment %}
-{% load static%}{% load humanize %}
+{% load custom_filter %}
+{% load static %}{% load humanize %}
 <!DOCTYPE html>
 <html>
 
@@ -20,7 +20,7 @@
         {% block content %}
           <div class="about-trade">
             <div class="container">
-              <form class="write-box" method="POST" action="" enctype="multipart/form-data">
+              <form class="write-box" method="POST" action="" enctype="multipart/form-data">  <!-- action dtl -->
                 {% csrf_token %}
                 <div class="flex-box">
                   <label class="img-upload">
@@ -30,17 +30,17 @@
                   <div>
                     <div class="flex-box column baseline title-box">
                       <label for="title">글 제목</label>
-                      <input type="text" name="title" placeholder="글 제목" required="required" value="">
+                      <input type="text" name="title" placeholder="글 제목" required="required" value="{% if post %}{{ post.title }}{% endif %}">
                       <label for=" price">가격</label>
-                      <input type="text" name="price" placeholder="가격" required="required" value="">
+                      <input type="text" name="price" placeholder="가격" required="required" value="{% if post %}{{ post.price }}{% endif %}">
                     </div>
                   </div>
                 </div>
                 <div class="full-box">
                   <label for="description" class="block-box">물품 설명</label>
                   <textarea name="description" required="required">
-                    {% comment %} {% if post %}{{ post.description }} {% endcomment %}
-                    {% comment %} {% endif %} {% endcomment %}
+                    {% if post %}{{ post.description }}
+                    {% endif %}
                   </textarea>
 
                 </div>
@@ -49,11 +49,11 @@
                   <input type="text" name="location" placeholder="거래를 희망하는 장소" required="required" value="{% if post %}{{ post.location }}{% endif %}">
                 </div>
                 <div class="submit-button-box">
-                  {% comment %} {% if post %} {% endcomment %}
+                  {% if post %}
                     <button type="submit">수정하기</button>
-                  {% comment %} {% else %} {% endcomment %}
+                  {% else %}
                     <button type="submit">전송</button>
-                  {% comment %} {% endif %} {% endcomment %}
+                  {% endif %}
                 </div>
               </form>
             </div>
