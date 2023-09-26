@@ -7,5 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("trade-button").classList.toggle("orange-text");
   } else if (window.location.pathname == "/location/") {
     document.getElementById("location-button").classList.toggle("orange-text");
+  }else if (window.location.pathname == "/jobs/") {
+    document.getElementById("jobs-button").classList.toggle("orange-text");
   }
 });
