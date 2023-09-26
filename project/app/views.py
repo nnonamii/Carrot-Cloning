@@ -197,6 +197,9 @@ def test(request):
 def jobs(request):
     return render(request, 'jobs.html')
 
+def stores(request):
+    return render(request, 'stores.html')
+
 def set_region(request):
     if request.method == "POST":
         region = request.POST.get('region-setting')
