@@ -5,6 +5,13 @@ from django.contrib import messages
 from .models import Post, UserProfile
 from django.db.models import Q
 # Create your views here.
+import requests, json, base64, time
+from pathlib import Path
+import os
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+SECRETS_DIR = BASE_DIR / '.secrets'
+secret = json.load(open(os.path.join(SECRETS_DIR, 'secret.json')))
 
 def main(request):
     return render(request, 'main.html')
@@ -24,6 +31,43 @@ def register(request):
 def write(request):
     return render(request, 'write.html')
 
+def payments(request):
+  return render(request,'payments/index.html',)
+
+def success(request):
+  orderId = request.GET.get('orderId')
+  amount = request.GET.get('amount')
+  paymentKey = request.GET.get('paymentKey')
+  
+  url = "https://api.tosspayments.com/v1/payments/confirm"
+
+  secretKey = secret["TOSS_API_KEY"]
+  userpass = secretKey + ':'
+  encoded_u = base64.b64encode(userpass.encode()).decode()
+  
+  headers = {"Authorization" : "Basic %s" % encoded_u,"Content-Type": "application/json"}
+  
+  params = {
+    "orderId" : orderId,
+    "amount" : amount,
+    "paymentKey": paymentKey,
+  }
+  
+  res = requests.post(url, data=json.dumps(params), headers=headers)
+  resjson = res.json()
+  pretty = json.dumps(resjson, indent=4)
+
+  respaymentKey = resjson["paymentKey"]
+  resorderId = resjson["orderId"]
+  
+
+  return render(request,"payments/success.html",{"res" : pretty,"respaymentKey" : respaymentKey,"resorderId" : resorderId,})
+
+def fail(request):
+  code = request.GET.get('code')
+  message = request.GET.get('message')
+  
+  return render(request,"payments/fail.html",{"code" : code,"message" : message,})
 def search(request):
     query = request.GET.get('search')
     if query:
