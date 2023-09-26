@@ -5,6 +5,7 @@ from .forms import CustomLoginForm, CustomRegistrationForm, PostForm
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
@@ -36,7 +37,32 @@ def chat(request):
 
 
 def trade(request):
-    return render(request, "trade.html")
+    top_views_posts = Post.objects.filter(product_sold="N").order_by("-view_num")
+    return render(request, "trade.html", {"posts": top_views_posts})
+
+def trade_post(request, pk):
+    # print(f"pk========={pk}")
+    post = Post.objects.get(id=pk)
+
+    if request.user.is_authenticated:
+        if request.user != post.user:
+            post.view_num += 1
+            post.save()
+    else:
+        post.view_num += 1
+        post.save()
+
+    try:
+        user_profile = UserProfile.objects.get(user=post.user)
+    except UserProfile.DoesNotExist:
+        user_profile = None
+
+    context = {
+        "post": post,
+        "user_profile": user_profile,
+    }
+
+    return render(request, "trade_post.html", context)
 
 
 def custom_login(request):
@@ -93,16 +119,15 @@ def custom_register(request):
 
 
 def write(request):
-    # try:
-    #     user_profile = UserProfile.objects.get(user=request.user)
+    try:
+        user_profile = UserProfile.objects.get(user=request.user)
 
-    #     if user_profile.region_certification == "Y":
-    #         return render(request, "write.html")
-    #     else:
-    #         return redirect("alert", alert_message="동네인증이 필요합니다.")
-    # except UserProfile.DoesNotExist:
-    #     return redirect("alert", alert_message="동네인증이 필요합니다.")
-    return render(request, "write.html")
+        if user_profile.region_certification == "Y":
+            return render(request, "write.html")
+        else:
+            return redirect("alert", alert_message="동네인증이 필요합니다.")
+    except UserProfile.DoesNotExist:
+        return redirect("alert", alert_message="동네인증이 필요합니다.")
 
 
 def edit(request, id):
@@ -206,8 +231,15 @@ def trade_post(request):
     return render(request, "trade_post.html")
 
 
+
 def location(request):
-    return render(request, "location.html")
+    try:
+        user_profile = UserProfile.objects.get(user_id=request.user)
+        region = user_profile.region
+    except UserProfile.DoesNotExist:
+        region = None
+        
+    return render(request, "location.html", {'region': region})
 
 
 def chat_post(request):
@@ -229,6 +261,7 @@ def oldcar(request):
 def stores(request):
     return render(request, 'stores.html')
 
+
 def set_region(request):
     if request.method == "POST":
         region = request.POST.get("region-setting")
@@ -246,8 +279,12 @@ def set_region(request):
             return JsonResponse({"status": "error", "message": "Region cannot be empty"})
     else:
         return JsonResponse({"status": "error", "message": "Method not allowed"}, status=405)
-    return render(request, "test.html")
-
+def set_region_certification(request):
+    if request.method == "POST":
+        request.user.profile.region_certification = 'Y'
+        request.user.profile.save()
+        messages.success(request, "인증되었습니다")
+        return redirect('location')
 
 def realty(request):
     return render(request, "realty.html")
