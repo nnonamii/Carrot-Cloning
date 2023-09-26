@@ -1,0 +1,75 @@
+{% load custom_filter %}
+{% load static %}{% load humanize %}
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>부동산 직거래</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/global.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/realty.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/nav.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/footer.css' %}" />
+</head>
+
+<body>
+  {% include 'nav.html' %}
+  <div class="content-box">
+    <a href="{% url 'write' %}">
+      <div class="floating-button">
+        거래글쓰기
+      </div>
+    </a>
+    <div class="about-trade">
+      <div class="container ">
+        <div class="trade-text">
+          <h3>복비없이 투명한</br>부동산 직거래</h3>
+          <p>이웃이 살던 집, 당근에서</br>편하게 직거래해보세요.</p>
+        </div>
+        <div class="thumbnail-img">
+          <img src="{% static 'img/realty.png' %}" alt="" />
+        </div>
+      </div>
+    </div>
+
+    <div class="post-box">
+      <div class="container column center">
+        <h1>인기 부동산 직거래 게시글</h1>
+      </div>
+      <div class="container column center">
+        <div class="full-box trade-box column">
+          <div class="flex-box full-box card-container between">
+            {% comment %} {% for post in posts %} {% endcomment %}
+
+            <div class="card-box">
+              <a href="{% url 'trade_post' %}" class="trade-text-link">
+                <div class="card-img">
+                  {% comment %} {% if post.images %} {% endcomment %}
+                  <img src="" alt="title">
+                  {% comment %} {% endif %} {% endcomment %}
+                </div>
+                <div class="card-info-box">
+                  <h5>title</h5>
+                  <p class="bold">price 원</p>
+                  <p>location</p>
+                  <div class="flex-box">
+                    <p>조회
+                      view_num</p>
+                    <p>·</p>
+                    <p>채팅
+                      chat_num</p>
+                  </div>
+                </div>
+              </a>
+            </div>
+            {% comment %} {% endfor %} {% endcomment %}
+
+          </div>
+        </div>
+      </div>
+    </div>
+    {% include 'footer.html' %}
+
+</body>
+
+</html>

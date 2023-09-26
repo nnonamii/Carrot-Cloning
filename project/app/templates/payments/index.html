@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>결제위젯 샘플</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/global.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/nav.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/footer.css' %}"/>
+    <script src="https://js.tosspayments.com/v1/payment-widget"></script>
+  </head>
+  <body>
+    {% include 'nav.html' %}
+    
+    <div style="display:flex;justify-content: center;">
+        <div id="payment-method" style="width:80%;"></div>
+    </div>
+    <div style="display:flex;justify-content: center;">
+        <button id="payment-request-button">결제하기</button>
+    </div>
+    
+    {% include 'footer.html' %}
+    <script>
+      const paymentWidget = PaymentWidget(
+        "test_ck_XLkKEypNArWaNyp1leA3lmeaxYG5",
+        PaymentWidget.ANONYMOUS
+      );
+
+      paymentWidget.renderPaymentMethods("#payment-method", { value: 50000 });
+
+      const paymentRequestButton = document.getElementById(
+        "payment-request-button"
+      );
+      paymentRequestButton.addEventListener("click", () => {
+
+        paymentWidget.requestPayment({
+          orderId: generateRandomString(),
+          orderName: "토스 티셔츠 외 2건",
+          successUrl: window.location.origin + "/success",
+          failUrl: window.location.origin + "/fail",
+        });
+      });
+
+      function generateRandomString() {
+        return window.btoa(Math.random()).slice(0, 20);
+      }
+    </script>
+  </body>
+</html>
