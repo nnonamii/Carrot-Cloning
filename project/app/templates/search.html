@@ -21,30 +21,30 @@
         <div class="container column center">
           <div class="full-box trade-box column">
             <div class="flex-box full-box card-container between">
-              {% comment %} {% for post in posts %} {% endcomment %}
+              {% for post in posts %}
 
                 <div class="card-box">
                   <a href="{% url 'trade_post' %}" class="trade-text-link">
                     <div class="card-img">
-                      {% comment %} {% if post.images %} {% endcomment %}
+                      {% if post.img %}
                         <img src="" alt="title">
-                      {% comment %} {% endif %} {% endcomment %}
+                      {% endif %}
                     </div>
                     <div class="card-info-box">
                       <h5>title</h5>
-                      <p class="bold">price</p>
+                      <p class="bold">{{ post.price }}</p>
                       <p>{{ post.location }}</p>
                       <div class="flex-box">
                         <p>조회
-                          view_num</p>
+                          {{ post.view_num }}</p>
                         <p>·</p>
                         <p>채팅
-                          chat_num</p>
+                          {{ post.chat_num }}</p>
                       </div>
                     </div>
                   </a>
                 </div>
-              {% comment %} {% endfor %} {% endcomment %}
+              {% endfor %}
 
             </div>
           </div>
