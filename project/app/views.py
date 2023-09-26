@@ -38,7 +38,7 @@ def chat(request):
 
 def trade(request):
     top_views_posts = Post.objects.filter(product_sold="N").order_by("-view_num")
-    return render(request, "trade.html", {"posts": top_views_posts})
+    return render(request, "trade/trade.html", {"posts": top_views_posts})
 
 def trade_post(request, pk):
     # print(f"pk========={pk}")
@@ -62,7 +62,7 @@ def trade_post(request, pk):
         "user_profile": user_profile,
     }
 
-    return render(request, "trade_post.html", context)
+    return render(request, "trade/trade_post.html", context)
 
 
 def custom_login(request):
@@ -83,7 +83,7 @@ def custom_login(request):
                 if user is not None:  # 회원일 때
                     login(request, user)
                     return redirect("main")
-        return render(request, "login.html", {"form": form})
+        return render(request, "user/login.html", {"form": form})
 
 
 def custom_register(request):
@@ -115,7 +115,7 @@ def custom_register(request):
     else:
         form = CustomRegistrationForm()
 
-    return render(request, "register.html", {"form": form, "error_message": error_message})
+    return render(request, "user/register.html", {"form": form, "error_message": error_message})
 
 
 def write(request):
@@ -123,7 +123,7 @@ def write(request):
         user_profile = UserProfile.objects.get(user=request.user)
 
         if user_profile.region_certification == "Y":
-            return render(request, "write.html")
+            return render(request, "trade/write.html")
         else:
             return redirect("alert", alert_message="동네인증이 필요합니다.")
     except UserProfile.DoesNotExist:
@@ -143,7 +143,7 @@ def edit(request, id):
             post.images = request.FILES["images"]
         post.save()
         return redirect("trade_post", pk=id)
-    return render(request, "write.html", {"post": post})
+    return render(request, "trade/write.html", {"post": post})
 
 
 def create_post(request):
@@ -156,7 +156,7 @@ def create_post(request):
             return redirect("trade_post", pk=post.pk)
         else:
             form = PostForm()
-    return render(request, "trade_post.html", {"form": form})
+    return render(request, "trade/trade_post.html", {"form": form})
 
 
 def payments(request):
@@ -224,11 +224,8 @@ def search(request):
     else:
         results = Post.objects.all()
 
-    return render(request, "search.html", {"posts": results})
+    return render(request, "trade/search.html", {"posts": results})
 
-
-def trade_post(request):
-    return render(request, "trade_post.html")
 
 
 
@@ -251,15 +248,15 @@ def test(request):
 
 
 def jobs(request):
-    return render(request, "jobs.html")
+    return render(request, "jobs/jobs.html")
 
 
 def oldcar(request):
-    return render(request, "oldcar.html")
+    return render(request, "oldcar/oldcar.html")
 
 
 def stores(request):
-    return render(request, 'stores.html')
+    return render(request, 'stores/stores.html')
 
 
 def set_region(request):
@@ -287,4 +284,4 @@ def set_region_certification(request):
         return redirect('location')
 
 def realty(request):
-    return render(request, "realty.html")
+    return render(request, "realty/realty.html")
