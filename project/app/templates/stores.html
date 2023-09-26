@@ -1,4 +1,4 @@
-{% load custom_filter %}
+{% comment %} {% load custom_filter%} {% endcomment %}
 {% load static %}{% load humanize %}
 <!DOCTYPE html>
 <html>
@@ -17,52 +17,52 @@
     <div class="content-box">
       <a href="{% url 'write' %}">
         <div class="floating-button">
-          거래글쓰기
+          가게 소개하기
         </div>
       </a>
       <div class="about-trade">
-        <div class="container">
+        <div class="container ">
           <div class="trade-text">
-            <h3>믿을만한</br>이웃 간 중고거래</h3>
-          <p>동네 주민들과 가깝고 따뜻한 거래를</br>지금 경험해보세요.</p>
+            <h3>동네 이웃들이</br>자주 가는 동네가게</h3>
+          <p>우리 동네 사람들이</br>이용하는 가게를 찾아보세요.</p>
       </div>
       <div class="thumbnail-img">
-        <img src="{% static 'img/img1.png' %}" alt=""/>
+        <img src="{% static 'img/stores.png' %}" alt=""/>
       </div>
     </div>
   </div>
 
   <div class="post-box">
     <div class="container column center">
-      <h1>중고거래 인기매물</h1>
+      <h1>다양한 동네가게를 볼 수 있어요</h1>
     </div>
     <div class="container column center">
       <div class="full-box trade-box column">
         <div class="flex-box full-box card-container between">
-          {% for post in posts %}
+          {% comment %} {% for post in posts %} {% endcomment %}
 
             <div class="card-box">
-              <a href="{% url 'trade_post' post.pk %}" class="trade-text-link">
+              <a href="{% url 'trade_post' %}" class="trade-text-link">
                 <div class="card-img">
-                  {% if post.images %}
-                    <img src="{{ post.images.url }}" alt="{{ post.title }}">
-                  {% endif %}
+                  {% comment %} {% if post.images %} {% endcomment %}
+                    <img src="" alt="title">
+                  {% comment %} {% endif %} {% endcomment %}
                 </div>
                 <div class="card-info-box">
-                  <h5>{{ post.title }}</h5>
-                  <p class="bold">{{ post.price |intcomma}}원</p>
-                  <p>{{ post.location }}</p>
+                  <h5>title</h5>
+                  <p class="bold">price 원</p>
+                  <p>location</p>
                   <div class="flex-box">
                     <p>조회
-                      {{ post.view_num }}</p>
+                      view_num</p>
                     <p>·</p>
                     <p>채팅
-                      {{ post.chat_num }}</p>
+                      chat_num</p>
                   </div>
                 </div>
               </a>
             </div>
-          {% endfor %}
+          {% comment %} {% endfor %} {% endcomment %}
 
         </div>
       </div>
