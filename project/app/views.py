@@ -226,6 +226,9 @@ def oldcar(request):
     return render(request, "oldcar.html")
 
 
+def stores(request):
+    return render(request, 'stores.html')
+
 def set_region(request):
     if request.method == "POST":
         region = request.POST.get("region-setting")
