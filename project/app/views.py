@@ -183,8 +183,15 @@ def trade_post(request):
     return render(request, "trade_post.html")
 
 
+
 def location(request):
-    return render(request, "location.html")
+    try:
+        user_profile = UserProfile.objects.get(user_id=request.user)
+        region = user_profile.region
+    except UserProfile.DoesNotExist:
+        region = None
+        
+    return render(request, "location.html", {'region': region})
 
 
 def chat_post(request):
@@ -214,8 +221,12 @@ def set_region(request):
             return JsonResponse({"status": "error", "message": "Region cannot be empty"})
     else:
         return JsonResponse({"status": "error", "message": "Method not allowed"}, status=405)
-    return render(request, "test.html")
-
+def set_region_certification(request):
+    if request.method == "POST":
+        request.user.profile.region_certification = 'Y'
+        request.user.profile.save()
+        messages.success(request, "인증되었습니다")
+        return redirect('location')
 
 def realty(request):
     return render(request, "realty.html")

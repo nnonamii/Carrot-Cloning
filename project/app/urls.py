@@ -20,6 +20,7 @@ urlpatterns = [
     path('chat_post/', views.chat_post, name='chat_post'),
     path('test/', views.test, name='test'),
     path('set_region/', views.set_region, name='set_region'),
+    path('set_region_certification/', views.set_region_certification, name='set_region_certification'),
     path('jobs/', views.jobs, name='jobs'),
     path('payments/', views.payments, name='payments'),
     path('success/', views.success, name='success'),
