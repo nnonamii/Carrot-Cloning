@@ -82,3 +82,12 @@ h1{
 .back-ye{
     background-color: #fffae0;
 }
+#payment-request-button{
+    background-color: #ff6f0e;
+    color: #fff;
+    padding: 16px 80px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 18px;
+}
