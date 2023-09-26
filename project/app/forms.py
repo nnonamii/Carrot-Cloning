@@ -1,7 +1,6 @@
 from django import forms
 from .models import Post
 
-
 class CustomLoginForm(forms.Form):
     username = forms.CharField(
         widget=forms.TextInput(attrs={"placeholder": "아이디를 입력해주세요", "class": "login-input"}),
