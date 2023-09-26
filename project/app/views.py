@@ -1,5 +1,9 @@
-from django.shortcuts import render
+from django.http import JsonResponse
+from django.shortcuts import redirect, render
+from django.contrib import messages
 
+from .models import Post, UserProfile
+from django.db.models import Q
 # Create your views here.
 
 def main(request):
@@ -21,7 +25,13 @@ def write(request):
     return render(request, 'write.html')
 
 def search(request):
-    return render(request, 'search.html')
+    query = request.GET.get('search')
+    if query:
+        results = Post.objects.filter(Q(title__icontains=query) | Q(location__icontains=query))
+    else:
+        results = Post.objects.all()
+    
+    return render(request, 'search.html', {'posts': results})
 
 def trade_post(request):
     return render(request, 'trade_post.html')
@@ -34,3 +44,21 @@ def chat_post(request):
 
 def test(request):
     return render(request, 'test.html')
+
+def set_region(request):
+    if request.method == "POST":
+        region = request.POST.get('region-setting')
+
+        if region:
+            try:
+                user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+                user_profile.region = region
+                user_profile.save()
+
+                return redirect('location')
+            except Exception as e:
+                return JsonResponse({"status": "error", "message": str(e)})
+        else:
+            return JsonResponse({"status": "error", "message": "Region cannot be empty"})
+    else:
+        return JsonResponse({"status": "error", "message": "Method not allowed"}, status=405)
