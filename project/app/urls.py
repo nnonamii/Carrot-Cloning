@@ -5,10 +5,13 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('', views.main, name='main'),
+    path("alert/<str:alert_message>/", views.alert, name="alert"),
     path('login/', views.custom_login, name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='main'), name='logout'),
     path('register/', views.custom_register, name='register'),
     path('write/', views.write, name='write'),
+    path("edit/<int:id>/", views.edit, name="edit"),
+    path("create_form/", views.create_post, name="create_form"),
     path('search/', views.search, name='search'),
     path('trade/', views.trade, name='trade'),
     path('trade_post/', views.trade_post, name='trade_post'),
@@ -16,4 +19,5 @@ urlpatterns = [
     path('chat/', views.chat, name='chat'),
     path('chat_post/', views.chat_post, name='chat_post'),
     path('test/', views.test, name='test'),
+    path("realty/", views.realty, name="realty"),
 ]
