@@ -11,5 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("jobs-button").classList.toggle("orange-text");
   } else if (window.location.pathname == "/realty/") {
     document.getElementById("realty-button").classList.toggle("orange-text");
+  } else if (window.location.pathname == "/oldcar/") {
+    document.getElementById("oldcar-button").classList.toggle("orange-text");
+
   }
 });
