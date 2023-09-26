@@ -16,4 +16,5 @@ urlpatterns = [
     path('chat_post/', views.chat_post, name='chat_post'),
     path('test/', views.test, name='test'),
     path('set_region/', views.set_region, name='set_region'),
+    path('jobs/', views.jobs, name='jobs'),
 ]

@@ -45,6 +45,9 @@ def chat_post(request):
 def test(request):
     return render(request, 'test.html')
 
+def jobs(request):
+    return render(request, 'jobs.html')
+
 def set_region(request):
     if request.method == "POST":
         region = request.POST.get('region-setting')
