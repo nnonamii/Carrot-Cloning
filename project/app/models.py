@@ -47,7 +47,7 @@ class Job(models.Model):
     price               = models.IntegerField(verbose_name='시급')
     description         = models.TextField(verbose_name='설명')
     location            = models.CharField(verbose_name='지역',max_length=100)
-    images              = models.ImageField(verbose_name='이미지',upload_to='post_images/') 
+    images              = models.ImageField(verbose_name='이미지',upload_to='jobs_images/') 
     user                = models.ForeignKey(User, on_delete=models.CASCADE, null=True, to_field='username')
     working_days        = models.CharField(verbose_name='근무 요일',max_length=100)
     working_time        = models.CharField(verbose_name='근무 시간',max_length=100)
