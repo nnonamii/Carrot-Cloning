@@ -21,7 +21,6 @@ urlpatterns = [
     path("trade_post/<int:pk>/", views.trade_post, name="trade_post"),
     path("location/", views.location, name="location"),
     path("chat/<str:room_name>/", views.chat, name="chat"),
-    path("chat_post/", views.chat_post, name="chat_post"),
     path("test/", views.test, name="test"),
     path("set_region/", views.set_region, name="set_region"),
     path("set_region_certification/", views.set_region_certification, name="set_region_certification"),
