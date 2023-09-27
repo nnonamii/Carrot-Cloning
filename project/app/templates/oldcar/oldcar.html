@@ -1,75 +1,71 @@
-{% comment %} {% load custom_filter%} {% endcomment %}
+{% load custom_filter %}
 {% load static %}{% load humanize %}
 <!DOCTYPE html>
 <html>
 
-  <head>
+<head>
     <title>중고차거래</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/global.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/trade.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/nav.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/footer.css' %}"/>
-  </head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/global.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/trade.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/nav.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/footer.css' %}" />
+</head>
 
-  <body>
+<body>
     {% include 'nav.html' %}
     <div class="content-box">
-      <a href="{% url 'write' %}">
-        <div class="floating-button">
-          거래글쓰기
-        </div>
-      </a>
-      <div class="about-trade">
-        <div class="container ">
-          <div class="trade-text">
-            <h3>딜러 수수료 없는</br>중고차 직거래</h3>
-          <p>딜러 없이 믿고 살 수 있는 중고차,</br>당근에서 직거래 해보세요.</p>
-      </div>
-      <div class="thumbnail-img">
-        <img src="{% static 'img/oldcar.png' %}" alt=""/>
-      </div>
-    </div>
-  </div>
-
-  <div class="post-box">
-    <div class="container column center">
-      <h1>인기 중고차</h1>
-    </div>
-    <div class="container column center">
-      <div class="full-box trade-box column">
-        <div class="flex-box full-box card-container between">
-          {% comment %} {% for post in posts %} {% endcomment %}
-
-            <div class="card-box">
-              <a href="{% url 'trade_post' %}" class="trade-text-link">
-                <div class="card-img">
-                  {% comment %} {% if post.images %} {% endcomment %}
-                    <img src="" alt="title">
-                  {% comment %} {% endif %} {% endcomment %}
-                </div>
-                <div class="card-info-box">
-                  <h5>title</h5>
-                  <p class="bold">price 원</p>
-                  <p>location</p>
-                  <div class="flex-box">
-                    <p>조회
-                      view_num</p>
-                    <p>·</p>
-                    <p>채팅
-                      chat_num</p>
-                  </div>
-                </div>
-              </a>
+        <a href="{% url 'oldcar_write' %}">
+            <div class="floating-button">
+                거래글쓰기
             </div>
-          {% comment %} {% endfor %} {% endcomment %}
-
+        </a>
+        <div class="about-trade">
+            <div class="container ">
+                <div class="trade-text">
+                    <h3>딜러 수수료 없는</br>중고차 직거래</h3>
+                    <p>딜러 없이 믿고 살 수 있는 중고차,</br>당근에서 직거래 해보세요.</p>
+                </div>
+                <div class="thumbnail-img">
+                    <img src="{% static 'img/oldcar.png' %}" alt="" />
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </div>
-  {% include 'footer.html' %}
 
+        <div class="post-box">
+            <div class="container column center">
+                <h1>인기 중고차</h1>
+            </div>
+            <div class="container column center">
+                <div class="full-box trade-box column">
+                    <div class="flex-box full-box card-container between">
+                        {% for oldcar in oldcars %}
+                        <div class="card-box">
+                            <a href="{% url 'oldcar_post' oldcar.pk %}" class="oldcar-text-link">
+                                <div class="card-img">
+                                    {% if oldcar.images %}
+                                    <img src="{{ oldcar.images.url }}" alt="{{ oldcar.title }}">
+                                    {% endif %}
+                                </div>
+                                <div class="card-info-box">
+                                    <h5>{{ oldcar.title }}</h5>
+                                    <p class="bold">{{ oldcar.price|intcomma }}원</p>
+                                    <p>{{ oldcar.location }}</p>
+                                    <div class="flex-box">
+                                        <p>조회 {{ oldcar.view_num }}</p>
+                                        <p>·</p>
+                                        <p>채팅 {{ oldcar.chat_num }}</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% include 'footer.html' %}
+    </div>
 </body>
 
 </html>

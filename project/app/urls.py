@@ -35,4 +35,7 @@ urlpatterns = [
     path("realty/", views.realty, name="realty"),
     path("realty_post/<int:pk>/", views.realty_post, name="realty_post"),
     path("oldcar/", views.oldcar, name="oldcar"),
+    path("oldcar_post/<str:pk>/", views.oldcar_post, name="oldcar_post"),
+    path("oldcar_write/", views.oldcar_write, name="oldcar_write"),
+    path("oldcar_create_form/", views.create_oldcar, name="oldcar_create_form"),
 ]

@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.contrib import messages
-from .models import Post, UserProfile
-from .forms import CustomLoginForm, CustomRegistrationForm, PostForm
+from .models import Post, UserProfile, Oldcar
+from .forms import CustomLoginForm, CustomRegistrationForm, PostForm, OldcarForm
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
@@ -268,7 +268,57 @@ def jobs(request):
 
 
 def oldcar(request):
-    return render(request, "oldcar/oldcar.html")
+    top_views_posts = Oldcar.objects.filter(product_sold="N").order_by("-view_num")
+    return render(request, "oldcar/oldcar.html", {"odlcars": top_views_posts})
+
+
+def oldcar_post(request, pk):
+    oldcar = Oldcar.objects.get(id=pk)
+
+    if request.user.is_authenticated:
+        if request.user != oldcar.user:
+            oldcar.view_num += 1
+            oldcar.save()
+    else:
+        oldcar.view_num += 1
+        oldcar.save()
+
+    try:
+        user_profile = UserProfile.objects.get(user=oldcar.user)
+    except UserProfile.DoesNotExist:
+        user_profile = None
+
+    context = {
+        "oldcar": oldcar,
+        "user_profile": user_profile,
+    }
+
+    return render(request, "oldcar/oldcar_post.html", context)
+
+
+def oldcar_write(request):
+    try:
+        user_profile = UserProfile.objects.get(user=request.user)
+
+        if user_profile.region_certification == "Y":
+            return render(request, "oldcar/oldcar_write.html")
+        else:
+            return redirect("alert", alert_message="동네인증이 필요합니다.")
+    except UserProfile.DoesNotExist:
+        return redirect("alert", alert_message="동네인증이 필요합니다.")
+
+
+def create_oldcar(request):
+    if request.method == "POST":
+        form = OldcarForm(request.POST, request.FILES)
+        if form.is_valid():
+            oldcar = form.save(commit=False)
+            oldcar.user = request.user
+            oldcar.save()
+            return redirect("oldcar_post", pk=oldcar.pk)
+    else:
+        form = OldcarForm()
+    return render(request, "oldcar/oldcar_post.html", {"form": form})
 
 
 def stores(request):
