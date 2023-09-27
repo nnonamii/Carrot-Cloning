@@ -40,11 +40,12 @@
           </div>
           {% else %}
           <div class="button-box">
-            <a href="{% url 'chat' %}">
+            <a href="{% url 'chat' post.user %}">
               <button class="orange">채팅하기</button>
             </a>
           </div>
           {% endif %}
+
         </div>
         <hr class="line">
         <div class="post-info-box">

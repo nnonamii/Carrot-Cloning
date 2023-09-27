@@ -40,7 +40,7 @@
             <!-- 채팅 리스트 -->
             <div class="chat-list-box flex-box column">
               <!-- 봇 -->
-              <div class="chat-box flex-box" onclick="location.href={% url 'chatbot' %}">
+              <div class="chat-box flex-box" style="background-color:#fa6616;">
                 <div class="ai-profile">
                   <img src="{% static 'img/icon_aibot.png'%}" alt="">
                 </div>
@@ -70,26 +70,11 @@
           <div class="chat-main-container">
             <div>
               <div class="contact-info flex-box">
-                상대방아이디
+                언제나 뜨거운 챗봇
                 <div class="temp">
-                  36.9도
+                  99.9도
                 </div>
               </div>
-
-              <!--물품정보-->
-              <div class="goods-box flex-box between">
-                <div class="flex-box">
-                  <div class="selected-thumbnail-box">
-                    <img src="" alt="">
-                  </div>
-                  <div class="goods-info-box">
-                    <p>LG 양문형 냉장고 778L</p>
-                    <p class="bold">150,000원</p>
-                  </div>
-                </div>
-                <button>거래완료</button>
-              </div>
-
               <!--채팅창 메인-->
               <div class="chat-container"></div>
             </div>
@@ -103,66 +88,52 @@
           </div>
         </div>
       </div>
-      <input type="hidden" id="user-name" value="{{ user.username }}">
-      <input type="hidden" id="room-name" value="{{ room_name }}">
     </div>
     {% include 'footer.html' %}
-    <script>
-      document.addEventListener("DOMContentLoaded", function() {
-          const roomName = document.getElementById('room-name').value; // 페이지에서 room_name을 가져옵니다
-          const userName = document.getElementById('user-name').value;
-  
-          const chatSocket = new WebSocket(
-              'ws://'
-              + window.location.host
-              + '/ws/chat/'
-              + roomName
-              + '/'
-          );
-  
-          chatSocket.onmessage = function(e) {
-              const data = JSON.parse(e.data);
-              console.log(data);
-              const chatLog = document.querySelector('.chat-container');
-              if(userName==data.username){
-                chatLog.innerHTML += `
+  </body>
+<script>
+async function generateResponse(input) {
+    const response = await fetch('/execute_chatbot/', {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': '{{ csrf_token }}',
+        },
+        body: JSON.stringify({ question: input }),
+    });
+    
+    const data = await response.json();
+    return data;
+    }
+document.querySelector('#chat-message-input').focus();
+document.querySelector('#chat-message-input').onkeyup = function(e) {
+    if (e.keyCode === 13) {  // enter, return
+        document.querySelector('#chat-message-submit').click();
+    }
+};
+document.querySelector('#chat-message-submit').onclick = function(e) {
+    
+    const chatLog = document.querySelector('.chat-container');
+    const message = document.getElementById('chat-message-input').value;
+    chatLog.innerHTML += `
                 <div class="message-box from-me">
                   <p class="s-text">오전 8:20</p>
-                  <div class="message-text">${data.message}</div>
+                  <div class="message-text">${message}</div>
                 </div>`;
-              }else{
-                chatLog.innerHTML += `
-                <div class="message-box from-you">
-                  <div class="message-text">${data.message}</div>
-                  <p class="s-text">오전 8:20</p>
-                </div>`;
-              }
-              chatLog.scrollTop = chatLog.scrollHeight;
-              
-          };
-  
-          chatSocket.onclose = function(e) {
-              console.error('Chat socket closed unexpectedly');
-          };
-  
-          document.querySelector('#chat-message-input').focus();
-          document.querySelector('#chat-message-input').onkeyup = function(e) {
-              if (e.keyCode === 13) {  // enter, return
-                  document.querySelector('#chat-message-submit').click();
-              }
-          };
-  
-          document.querySelector('#chat-message-submit').onclick = function(e) {
-              const messageInputDom = document.querySelector('#chat-message-input');
-              const message = messageInputDom.value;
-              chatSocket.send(JSON.stringify({
-                  'username': userName,
-                  'message': message
-              }));
-              messageInputDom.value = '';
-          };
-      });
-  </script>
-  </body>
-
+    const messageInputDom = document.getElementById('chat-message-input')
+    generateResponse(message)
+        .then(response => {
+            chatLog.innerHTML += `
+            <div class="message-box from-you">
+              <div class="message-text">${response['response']}</div>
+              <p class="s-text">오전 8:20</p>
+            </div>`;
+        })
+        .catch(error => {
+        console.error(error);
+        });
+        chatLog.scrollTop = chatLog.scrollHeight;
+    messageInputDom.value = '';
+};
+</script>
 </html>
