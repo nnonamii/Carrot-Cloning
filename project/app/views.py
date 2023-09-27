@@ -11,7 +11,7 @@ from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 
 
-from .models import Post, UserProfile
+from .models import Post, UserProfile, Realty
 from django.db.models import Q
 
 # Create your views here.
@@ -32,6 +32,10 @@ def alert(request, alert_message):
     return render(request, "alert.html", {"alert_message": alert_message})
 
 
+def login_alert(request):
+    return render(request, "user/login_alert.html")
+
+
 def chat(request):
     return render(request, "chat.html")
 
@@ -42,8 +46,7 @@ def trade(request):
 
 
 def trade_post(request, pk):
-    # print(f"pk========={pk}")
-    post = Post.objects.get(id=pk)
+    post = get_object_or_404(Post, pk=pk)
 
     if request.user.is_authenticated:
         if request.user != post.user:
@@ -119,6 +122,7 @@ def custom_register(request):
     return render(request, "user/register.html", {"form": form, "error_message": error_message})
 
 
+# @login_required
 def write(request):
     try:
         user_profile = UserProfile.objects.get(user=request.user)
@@ -129,6 +133,8 @@ def write(request):
             return redirect("alert", alert_message="동네인증이 필요합니다.")
     except UserProfile.DoesNotExist:
         return redirect("alert", alert_message="동네인증이 필요합니다.")
+    except:
+        return redirect("login_alert")
 
 
 def edit(request, id):
@@ -147,6 +153,17 @@ def edit(request, id):
     return render(request, "trade/write.html", {"post": post})
 
 
+def delete(request, id):
+    try:
+        post = Post.objects.get(id=id)
+        post.delete()
+        messages.success(request, "삭제되었습니다.")
+    except Post.DoesNotExist:
+        messages.error(request, "포스팅을 찾을 수 없습니다.")
+    return redirect("trade")
+
+
+@login_required
 def create_post(request):
     if request.method == "POST":
         form = PostForm(request.POST, request.FILES)
@@ -336,4 +353,29 @@ def set_region_certification(request):
 
 
 def realty(request):
-    return render(request, "realty/realty.html")
+    top_views_posts = Post.objects.filter(product_sold="N").order_by("-view_num")
+    return render(request, "realty/realty.html", {"posts": top_views_posts})
+
+
+def realty_post(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+
+    if request.user.is_authenticated:
+        if request.user != post.user:
+            post.view_num += 1
+            post.save()
+    else:
+        post.view_num += 1
+        post.save()
+
+    try:
+        user_profile = UserProfile.objects.get(user=post.user)
+    except UserProfile.DoesNotExist:
+        user_profile = None
+
+    context = {
+        "post": post,
+        "user_profile": user_profile,
+    }
+
+    return render(request, "realty/realty_post.html", context)

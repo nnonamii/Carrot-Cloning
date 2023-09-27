@@ -1,4 +1,4 @@
-nav{
+nav {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -13,16 +13,16 @@ nav{
     padding: 14px 0;
 }
 
-.logo{
+.logo {
     margin-right: 15px;
 }
 
-.nav-buttons{
+.nav-buttons {
     display: flex;
     gap: 20px;
 }
 
-.nav-buttons a button{
+.nav-buttons a button {
     font-size: 18px;
     border: none;
     background-color: transparent;
@@ -30,26 +30,27 @@ nav{
 
 }
 
-.ghost-button{
+.ghost-button {
     font-size: 16px;
     padding: 6px 16px;
     text-decoration: none;
     border: 1px solid #d7d7d7;
 }
 
-.orange{
+.orange {
     color: #fa6616;
     border: 1px solid #fa6616;
 }
 
-input{
+input {
     background-color: #f3f3f3;
-    padding:6px 16px;
+    padding: 6px 16px;
     font-size: 16px;
     border: none;
+    width: 220px;
 }
 
-.orange-text{
+.orange-text {
     color: #fa6616;
-    
+
 }
