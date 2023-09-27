@@ -258,10 +258,6 @@ def location(request):
     return render(request, "location.html", {"region": region})
 
 
-def chat_post(request):
-    return render(request, "chat_post.html")
-
-
 def test(request):
     return render(request, "test.html")
 
@@ -429,3 +425,6 @@ def realty_post(request, pk):
     }
 
     return render(request, "realty/realty_post.html", context)
+
+def chat_room(request, username, room_name):
+    pass
