@@ -10,8 +10,9 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 
+import openai
 
-from .models import Post, UserProfile
+from .models import Post, UserProfile, Realty
 from django.db.models import Q
 
 # Create your views here.
@@ -32,8 +33,14 @@ def alert(request, alert_message):
     return render(request, "alert.html", {"alert_message": alert_message})
 
 
-def chat(request):
-    return render(request, "chat.html")
+def chat(request, room_name):
+    user = request.user
+    return render(request, "chat.html",{"user":user, "room_name":room_name})
+
+def login_alert(request):
+    return render(request, "user/login_alert.html")
+
+
 
 
 def trade(request):
@@ -42,8 +49,7 @@ def trade(request):
 
 
 def trade_post(request, pk):
-    # print(f"pk========={pk}")
-    post = Post.objects.get(id=pk)
+    post = get_object_or_404(Post, pk=pk)
 
     if request.user.is_authenticated:
         if request.user != post.user:
@@ -119,6 +125,7 @@ def custom_register(request):
     return render(request, "user/register.html", {"form": form, "error_message": error_message})
 
 
+# @login_required
 def write(request):
     try:
         user_profile = UserProfile.objects.get(user=request.user)
@@ -129,6 +136,8 @@ def write(request):
             return redirect("alert", alert_message="동네인증이 필요합니다.")
     except UserProfile.DoesNotExist:
         return redirect("alert", alert_message="동네인증이 필요합니다.")
+    except:
+        return redirect("login_alert")
 
 
 def edit(request, id):
@@ -147,6 +156,17 @@ def edit(request, id):
     return render(request, "trade/write.html", {"post": post})
 
 
+def delete(request, id):
+    try:
+        post = Post.objects.get(id=id)
+        post.delete()
+        messages.success(request, "삭제되었습니다.")
+    except Post.DoesNotExist:
+        messages.error(request, "포스팅을 찾을 수 없습니다.")
+    return redirect("trade")
+
+
+@login_required
 def create_post(request):
     if request.method == "POST":
         form = PostForm(request.POST, request.FILES)
@@ -337,3 +357,74 @@ def set_region_certification(request):
 
 def realty(request):
     return render(request, "realty/realty.html")
+
+openai.api_key = secret['AI_API_KEY']
+
+def chatbot(request):
+    return render(request, "chatbot.html")
+
+class ChatBot():
+    def __init__(self, model='gpt-3.5-turbo'):
+        self.model = model
+        self.messages = []
+        
+    def ask(self, question):
+        self.messages.append({
+            'role': 'user', 
+            'content': question
+        })
+        res = self.__ask__()
+        return res
+        
+    def __ask__(self):
+        completion = openai.ChatCompletion.create(
+            # model 지정
+            model=self.model,
+            messages=self.messages
+        )
+        response = completion.choices[0].message['content']
+        self.messages.append({
+            'role': 'assistant', 
+            'content': response
+        })
+        return response
+    
+    def show_messages(self):
+        return self.messages
+    
+    def clear(self):
+        self.messages.clear()
+
+def execute_chatbot(request):
+    if request.method == "POST":
+        data = json.loads(request.body.decode('utf-8'))
+        question = data.get('question')
+        chatbot = ChatBot()
+        response = chatbot.ask(question)
+        return JsonResponse({"response": response})
+    top_views_posts = Post.objects.filter(product_sold="N").order_by("-view_num")
+    return render(request, "realty/realty.html", {"posts": top_views_posts})
+
+
+def realty_post(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+
+    if request.user.is_authenticated:
+        if request.user != post.user:
+            post.view_num += 1
+            post.save()
+    else:
+        post.view_num += 1
+        post.save()
+
+    try:
+        user_profile = UserProfile.objects.get(user=post.user)
+    except UserProfile.DoesNotExist:
+        user_profile = None
+
+    context = {
+        "post": post,
+        "user_profile": user_profile,
+    }
+
+    return render(request, "realty/realty_post.html", context)

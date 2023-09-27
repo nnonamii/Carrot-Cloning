@@ -40,7 +40,7 @@
             <!-- 채팅 리스트 -->
             <div class="chat-list-box flex-box column">
               <!-- 봇 -->
-              <div class="chat-box flex-box">
+              <div class="chat-box flex-box" onclick="location.href={% url 'chatbot' %}">
                 <div class="ai-profile">
                   <img src="{% static 'img/icon_aibot.png'%}" alt="">
                 </div>
@@ -91,30 +91,78 @@
               </div>
 
               <!--채팅창 메인-->
-              <div class="chat-container">
-                <div class="message-box from-you">
-                  <div class="message-text">입금확인했습니다~</div>
-                  <p class="s-text">오전 8:20</p>
-                </div>
-                <div class="message-box from-me">
-                  <p class="s-text">오전 8:20</p>
-                  <div class="message-text">네 좋은물건 감사합니다~</div>
-                </div>
-              </div>
+              <div class="chat-container"></div>
             </div>
 
-            <form class="chat-input" action="submit">
-              <textarea name="" id="" cols="30" rows="10" placeholder="메세지를 입력해주세요"></textarea>
+            <div class="chat-input">
+              <textarea name="chat-message-input" id="chat-message-input" cols="30" rows="10" placeholder="메세지를 입력해주세요"></textarea>
               <div>
-                <button>전송</button>
+                <button id="chat-message-submit">전송</button>
               </div>
             </form>
           </div>
         </div>
       </div>
+      <input type="hidden" id="user-name" value="{{ user.username }}">
+      <input type="hidden" id="room-name" value="{{ room_name }}">
     </div>
     {% include 'footer.html' %}
-
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+          const roomName = document.getElementById('room-name').value; // 페이지에서 room_name을 가져옵니다
+          const userName = document.getElementById('user-name').value;
+  
+          const chatSocket = new WebSocket(
+              'ws://'
+              + window.location.host
+              + '/ws/chat/'
+              + roomName
+              + '/'
+          );
+  
+          chatSocket.onmessage = function(e) {
+              const data = JSON.parse(e.data);
+              console.log(data);
+              const chatLog = document.querySelector('.chat-container');
+              if(userName==data.username){
+                chatLog.innerHTML += `
+                <div class="message-box from-me">
+                  <p class="s-text">오전 8:20</p>
+                  <div class="message-text">${data.message}</div>
+                </div>`;
+              }else{
+                chatLog.innerHTML += `
+                <div class="message-box from-you">
+                  <div class="message-text">${data.message}</div>
+                  <p class="s-text">오전 8:20</p>
+                </div>`;
+              }
+              chatLog.scrollTop = chatLog.scrollHeight;
+              
+          };
+  
+          chatSocket.onclose = function(e) {
+              console.error('Chat socket closed unexpectedly');
+          };
+  
+          document.querySelector('#chat-message-input').focus();
+          document.querySelector('#chat-message-input').onkeyup = function(e) {
+              if (e.keyCode === 13) {  // enter, return
+                  document.querySelector('#chat-message-submit').click();
+              }
+          };
+  
+          document.querySelector('#chat-message-submit').onclick = function(e) {
+              const messageInputDom = document.querySelector('#chat-message-input');
+              const message = messageInputDom.value;
+              chatSocket.send(JSON.stringify({
+                  'username': userName,
+                  'message': message
+              }));
+              messageInputDom.value = '';
+          };
+      });
+  </script>
   </body>
 
 </html>

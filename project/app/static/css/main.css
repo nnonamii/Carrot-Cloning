@@ -1,37 +1,50 @@
 /* 랜딩페이지 */
 
-.section1{
-    background-color: #fffae0;
-    height: 740px;
+a {
+    text-decoration: none;
 }
 
-.section2{
+h2 {
+    color: #ff6f0e;
+    font-weight: 700;
+    font-size: 25px;
+}
+
+
+
+.section1 {
+    background-color: #fffae0;
+    height: 650px;
+    margin-top: 65px;
+}
+
+.section2 {
     background-color: #fff;
     height: 740px;
 }
 
-.section3{
-    background-color: #e6f3e6;
+.section3 {
+    background-color: #F6FDEC;
     height: 740px;
 }
 
-.section3-text{
+.section3-text {
     width: 45%;
 }
 
-.main-box{
-    gap:24px;
+.main-box {
+    gap: 24px;
     align-items: baseline;
 }
 
-.section1 h4{
+.section1 h4 {
     font-size: 22px;
     color: #000;
     opacity: 0.5;
     line-height: 1.4;
 }
 
-.section1 button{
+.section1 button {
     background-color: #ff6f0e;
     color: #fff;
     padding: 16px 30px;
@@ -41,18 +54,19 @@
     font-size: 18px;
 }
 
-.description-box{
+.description-box {
     display: flex;
     flex-direction: column;
     gap: 34px;
 }
 
-.description-box p{
+.description-box p {
     font-size: 17px;
     line-height: 1.6;
 }
 
-.description-box button{
+.description-box button,
+.section3-text button {
     font-size: 19px;
     font-weight: 700;
     background-color: #f2f3f6;
@@ -66,51 +80,51 @@
 
 /* 중고거래 인기매물 */
 
-.trade-info-section{
+.trade-info-section {
     background-color: #f8f9fa;
     padding-bottom: 160px;
 
 }
 
-.trade-section{
+.trade-section {
     flex-direction: column;
     align-items: center;
 }
 
-.trade-box{
+.trade-box {
     align-items: center;
     display: contents;
 }
 
-.trade-box a{
+.trade-box a {
     color: #000;
 }
 
 
-.trade-info-section h1{
+.trade-info-section h1 {
     margin: 112px 0 80px 0;
 }
 
-.card-container{
+.card-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
 }
 
-.card-box{
+.card-box {
     flex: 0 0 23%;
     margin-bottom: 55px;
 }
 
-.card-box:hover{
+.card-box:hover {
     opacity: 0.8;
 }
 
-.card-box a{
+.card-box a {
     text-decoration: none;
 }
 
-.card-img{
+.card-img {
     background-color: #292929;
     height: 276px;
     width: 100%;
@@ -118,14 +132,14 @@
 
 }
 
-.card-img img{
+.card-img img {
     object-fit: cover;
     width: 100%;
     height: 100%;
     border-radius: 12px;
 }
 
-.card-info-box{
+.card-info-box {
     width: 210px;
     overflow: hidden;
     margin-top: 16px;
@@ -134,6 +148,33 @@
     gap: 6px;
 }
 
-.card-info-box h5{
+.card-info-box h5 {
     width: 100%;
+}
+
+.subtitles {
+    font-weight: 700;
+    margin: 5px 0px;
+}
+
+.subdescriptions {
+    opacity: 0.8;
+    line-height: 1.2;
+}
+
+#main-pics {
+    width: 650px;
+    height: 740px;
+}
+
+#character {
+    width: 520px;
+    height: 650px;
+}
+
+h5 {
+    font-size: 22px;
+    color: #000;
+    opacity: 0.5;
+    line-height: 1.4;
 }
