@@ -93,7 +93,7 @@ class Realty(models.Model):
     elevator = models.CharField(verbose_name="엘리베이터", max_length=1, default="N")
     description = models.TextField(verbose_name="설명")
     location = models.CharField(verbose_name="지역", max_length=100)
-    images = models.ImageField(verbose_name="이미지", upload_to="post_images/")
+    images = models.ImageField(verbose_name="이미지", upload_to="realty_images/")
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, to_field="username")
 
     created_at = models.DateTimeField(verbose_name="작성일자", auto_now_add=True, null=True)
@@ -123,3 +123,8 @@ class Oldcar(models.Model):
     view_num = models.PositiveIntegerField(verbose_name="조회수", default=0)
     chat_num = models.PositiveIntegerField(verbose_name="채팅수", default=0)
 
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ["-created_at"]
