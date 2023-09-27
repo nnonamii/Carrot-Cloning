@@ -1,5 +1,6 @@
 from django import forms
-from .models import Post
+from .models import Post, Oldcar
+
 
 class CustomLoginForm(forms.Form):
     username = forms.CharField(
@@ -38,3 +39,17 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ["title", "price", "description", "location", "images"]
+
+
+class OldcarForm(forms.ModelForm):
+    class Meta:
+        model = Oldcar
+        fields = [
+            "title",
+            "price",
+            "description",
+            "location",
+            "images",
+            "car_info",
+            "insurance_history",
+        ]
