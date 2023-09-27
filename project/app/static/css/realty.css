@@ -58,7 +58,10 @@ body {
   height: 100%;
 }
 
-
+/* #realty {
+  position: absolute;
+  z-index: 9999;
+} */
 
 
 /* 중고거래 인기매물 */
