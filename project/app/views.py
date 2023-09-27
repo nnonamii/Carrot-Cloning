@@ -10,6 +10,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 
+import openai
 
 from .models import Post, UserProfile, Realty
 from django.db.models import Q
@@ -32,12 +33,14 @@ def alert(request, alert_message):
     return render(request, "alert.html", {"alert_message": alert_message})
 
 
+def chat(request, room_name):
+    user = request.user
+    return render(request, "chat.html",{"user":user, "room_name":room_name})
+
 def login_alert(request):
     return render(request, "user/login_alert.html")
 
 
-def chat(request):
-    return render(request, "chat.html")
 
 
 def trade(request):
@@ -353,6 +356,52 @@ def set_region_certification(request):
 
 
 def realty(request):
+    return render(request, "realty/realty.html")
+
+openai.api_key = secret['AI_API_KEY']
+
+def chatbot(request):
+    return render(request, "chatbot.html")
+
+class ChatBot():
+    def __init__(self, model='gpt-3.5-turbo'):
+        self.model = model
+        self.messages = []
+        
+    def ask(self, question):
+        self.messages.append({
+            'role': 'user', 
+            'content': question
+        })
+        res = self.__ask__()
+        return res
+        
+    def __ask__(self):
+        completion = openai.ChatCompletion.create(
+            # model 지정
+            model=self.model,
+            messages=self.messages
+        )
+        response = completion.choices[0].message['content']
+        self.messages.append({
+            'role': 'assistant', 
+            'content': response
+        })
+        return response
+    
+    def show_messages(self):
+        return self.messages
+    
+    def clear(self):
+        self.messages.clear()
+
+def execute_chatbot(request):
+    if request.method == "POST":
+        data = json.loads(request.body.decode('utf-8'))
+        question = data.get('question')
+        chatbot = ChatBot()
+        response = chatbot.ask(question)
+        return JsonResponse({"response": response})
     top_views_posts = Post.objects.filter(product_sold="N").order_by("-view_num")
     return render(request, "realty/realty.html", {"posts": top_views_posts})
 

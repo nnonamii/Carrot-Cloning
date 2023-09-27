@@ -42,7 +42,7 @@
           {% comment %} {% for post in posts %} {% endcomment %}
 
             <div class="card-box">
-              <a href="{% url 'trade_post' %}" class="trade-text-link">
+              <a href="{% url 'trade_post' 1 %}" class="trade-text-link">
                 <div class="card-img">
                   {% comment %} {% if post.images %} {% endcomment %}
                     <img src="" alt="title">
