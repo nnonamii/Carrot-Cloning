@@ -30,4 +30,6 @@ urlpatterns = [
     path('fail/', views.fail, name='fail'),
     path("realty/", views.realty, name="realty"),
     path("oldcar/", views.oldcar, name="oldcar"),
+    path("chatbot/", views.chatbot, name="chatbot"),
+    path('execute_chatbot/', views.execute_chatbot, name='execute_chatbot'),
 ]

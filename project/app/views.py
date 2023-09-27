@@ -10,6 +10,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 
+import openai
 
 from .models import Post, UserProfile
 from django.db.models import Q
@@ -286,3 +287,48 @@ def set_region_certification(request):
 
 def realty(request):
     return render(request, "realty/realty.html")
+
+openai.api_key = secret['AI_API_KEY']
+
+def chatbot(request):
+    return render(request, "chatbot.html")
+
+class ChatBot():
+    def __init__(self, model='gpt-3.5-turbo'):
+        self.model = model
+        self.messages = []
+        
+    def ask(self, question):
+        self.messages.append({
+            'role': 'user', 
+            'content': question
+        })
+        res = self.__ask__()
+        return res
+        
+    def __ask__(self):
+        completion = openai.ChatCompletion.create(
+            # model 지정
+            model=self.model,
+            messages=self.messages
+        )
+        response = completion.choices[0].message['content']
+        self.messages.append({
+            'role': 'assistant', 
+            'content': response
+        })
+        return response
+    
+    def show_messages(self):
+        return self.messages
+    
+    def clear(self):
+        self.messages.clear()
+
+def execute_chatbot(request):
+    if request.method == "POST":
+        data = json.loads(request.body.decode('utf-8'))
+        question = data.get('question')
+        chatbot = ChatBot()
+        response = chatbot.ask(question)
+        return JsonResponse({"response": response})
