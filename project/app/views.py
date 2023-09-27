@@ -32,8 +32,9 @@ def alert(request, alert_message):
     return render(request, "alert.html", {"alert_message": alert_message})
 
 
-def chat(request):
-    return render(request, "chat.html")
+def chat(request, room_name):
+    user = request.user
+    return render(request, "chat.html",{"user":user, "room_name":room_name})
 
 
 def trade(request):

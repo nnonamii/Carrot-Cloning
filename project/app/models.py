@@ -34,12 +34,26 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return f"{self.user.username} Profile"
-
+    
+    
+class ChatRoom(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="post")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="room_name")
+    created_dt = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-created_dt']
 
 class Chat(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_name")
+    chat_room = models.ForeignKey(ChatRoom, on_delete=models.CASCADE, related_name="chat_room")
     message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-timestamp']
+    
+
 
 
 class Job(models.Model):
