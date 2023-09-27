@@ -356,7 +356,8 @@ def set_region_certification(request):
 
 
 def realty(request):
-    return render(request, "realty/realty.html")
+    top_views_posts = Post.objects.filter(product_sold="N").order_by("-view_num")
+    return render(request, "realty/realty.html", {"posts": top_views_posts})
 
 openai.api_key = secret['AI_API_KEY']
 
@@ -402,12 +403,12 @@ def execute_chatbot(request):
         chatbot = ChatBot()
         response = chatbot.ask(question)
         return JsonResponse({"response": response})
-    top_views_posts = Post.objects.filter(product_sold="N").order_by("-view_num")
-    return render(request, "realty/realty.html", {"posts": top_views_posts})
+    
+    
 
 
 def realty_post(request, pk):
-    post = get_object_or_404(Post, pk=pk)
+    post = get_object_or_404(Realty, pk=pk)
 
     if request.user.is_authenticated:
         if request.user != post.user:
