@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from django.contrib import messages
-from .models import Post, UserProfile, Oldcar
+from .models import Post, UserProfile, Oldcar, Chat, ChatRoom
 from .forms import CustomLoginForm, CustomRegistrationForm, PostForm, OldcarForm
 
 from django.shortcuts import render, redirect, get_object_or_404
@@ -33,9 +33,67 @@ def alert(request, alert_message):
     return render(request, "alert.html", {"alert_message": alert_message})
 
 
-def chat(request, room_name):
-    user = request.user
-    return render(request, "chat.html",{"user":user, "room_name":room_name})
+def chat(request, room_name, pk):
+    post = get_object_or_404(Post, pk=pk)
+    user = User.objects.get(username=room_name)
+    login_user = request.user
+    live_chat_room = ChatRoom.objects.get_or_create(user=user, post=post)
+    try:
+        login_user_info = User.objects.get(username=login_user)
+        login_post_info = Post.objects.filter(user=login_user_info)
+        chat_room_ids = Chat.objects.filter(user=login_user_info).values_list('chat_room', flat=True).distinct()
+        
+        chat_rooms = ChatRoom.objects.filter(Q(id__in=chat_room_ids) | Q(post__in=login_post_info))
+        post_ids = chat_rooms.values_list('post', flat=True)
+        posts = Post.objects.filter(id__in=post_ids)
+        
+        other_user_chat = Chat.objects.filter(chat_room__in=chat_rooms).exclude(user=login_user_info).distinct()
+        other_user = User.objects.get(id=other_user_chat[0].user_id)
+    
+        chat_room_list =  zip(chat_rooms, posts)
+    except Chat.DoesNotExist:
+        chat_room_ids = None
+    except ChatRoom.DoesNotExist:
+        chat_rooms = None
+    
+    data = {
+        "user":login_user,
+        "other_user":other_user, 
+        "room_name":room_name, 
+        "post": post,
+        "live_chat_room": live_chat_room,
+        "chat_room_list": chat_room_list
+        }
+    return render(request, "chat.html", data)
+
+def chat_message(request):
+    if request.method == "POST":
+        message = request.POST["message"]
+        room_name = request.POST["room_name"]
+        post_id = request.POST["post_id"]
+        seller = User.objects.get(username=room_name)
+        post = Post.objects.get(pk=post_id)
+        chat_room = get_object_or_404(ChatRoom, user=seller, post=post)
+        
+        chat = Chat.objects.create(chat_room=chat_room, user=request.user, message=message)
+        chat.save()
+        
+        return JsonResponse({"status": "success", "message": "Message saved successfully."})
+    else:
+        return JsonResponse({"status": "error", "message": "Invalid request method."}, status=400)    
+
+def get_chat_messages(request, room, post_id):
+    try:
+        seller = User.objects.get(username=room)
+        post = Post.objects.get(pk=post_id)
+        chat_room = ChatRoom.objects.get(user=seller, post=post)
+        chat_messages = Chat.objects.filter(chat_room=chat_room).order_by('timestamp')
+        messages = [{'user': chat_message.user.username, 'message': chat_message.message, 'timestamp': chat_message.timestamp} for chat_message in chat_messages]
+        return JsonResponse({'messages': messages})
+    except User.DoesNotExist:
+        return JsonResponse({'error': 'User not found'}, status=404)
+    except ChatRoom.DoesNotExist:
+        return JsonResponse({'error': 'Chat room not found'}, status=404)
 
 def login_alert(request):
     return render(request, "user/login_alert.html")
@@ -358,7 +416,25 @@ def realty(request):
 openai.api_key = secret['AI_API_KEY']
 
 def chatbot(request):
-    return render(request, "chatbot.html")
+    try:
+        login_user = request.user
+        login_user_info = User.objects.get(username=login_user)
+        login_post_info = Post.objects.filter(user=login_user_info)
+        chat_room_ids = Chat.objects.filter(user=login_user_info).values_list('chat_room', flat=True).distinct()
+        
+        chat_rooms = ChatRoom.objects.filter(Q(id__in=chat_room_ids) | Q(post__in=login_post_info))
+        post_ids = chat_rooms.values_list('post', flat=True)
+        posts = Post.objects.filter(id__in=post_ids)
+        
+        other_user_chat = Chat.objects.filter(chat_room__in=chat_rooms).exclude(user=login_user_info).distinct()
+        other_user = User.objects.get(id=other_user_chat[0].user_id)
+    
+        chat_room_list =  zip(chat_rooms, posts)
+    except Chat.DoesNotExist:
+        chat_room_ids = None
+    except ChatRoom.DoesNotExist:
+        chat_rooms = None
+    return render(request, "chatbot.html",{"chat_room_list":chat_room_list, "other_user":other_user})
 
 class ChatBot():
     def __init__(self, model='gpt-3.5-turbo'):
@@ -425,6 +501,3 @@ def realty_post(request, pk):
     }
 
     return render(request, "realty/realty_post.html", context)
-
-def chat_room(request, username, room_name):
-    pass

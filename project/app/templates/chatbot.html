@@ -50,19 +50,21 @@
                 </div>
               </div>
               <!-- 채팅방리스트 -->
-              <div class="flex-box chat-box between">
-                <div>
-                  <div class="flex-box">
-                    <p class="bold">상대방아이디</p>
-                    <p class="s-text">화곡동</p>
-                    <p class="s-text">3주전</p>
+              {% for room, p in chat_room_list %}
+                <div class="flex-box chat-box between" onclick="location.href='{% url 'chat' room.user.username p.id %}'">
+                  <div>
+                    <div class="flex-box">
+                      <p class="bold">{{ other_user }}</p>
+                      <p class="s-text">화곡동</p>
+                      <p class="s-text">3주전</p>
+                    </div>
+                    <p class="chat-thumb-text">거래 잘 하셨나요? 거래한 이웃..</p>
                   </div>
-                  <p class="chat-thumb-text">거래 잘 하셨나요? 거래한 이웃..</p>
+                  <div class="thumbnail-box">
+                    <img src="{{ p.images.url }}" alt="">
+                  </div>
                 </div>
-                <div class="thumbnail-box">
-                  <img src="" alt="">
-                </div>
-              </div>
+              {% endfor %}
             </div>
           </div>
 

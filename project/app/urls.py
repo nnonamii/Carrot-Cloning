@@ -20,7 +20,7 @@ urlpatterns = [
     path("trade/", views.trade, name="trade"),
     path("trade_post/<int:pk>/", views.trade_post, name="trade_post"),
     path("location/", views.location, name="location"),
-    path("chat/<str:room_name>/", views.chat, name="chat"),
+    path("chat/<str:room_name>/<int:pk>/", views.chat, name="chat"),
     path("test/", views.test, name="test"),
     path("set_region/", views.set_region, name="set_region"),
     path("set_region_certification/", views.set_region_certification, name="set_region_certification"),
@@ -37,4 +37,6 @@ urlpatterns = [
     path("oldcar_post/<str:pk>/", views.oldcar_post, name="oldcar_post"),
     path("oldcar_write/", views.oldcar_write, name="oldcar_write"),
     path("oldcar_create_form/", views.create_oldcar, name="oldcar_create_form"),
+    path("chat_message/", views.chat_message, name="chat_message"),
+    path("get_chat_messages/<str:room>/<int:post_id>/", views.get_chat_messages, name="get_chat_messages"),
 ]
