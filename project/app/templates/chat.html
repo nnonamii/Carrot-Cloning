@@ -135,17 +135,18 @@
           chatSocket.onmessage = function(e) {
               const data = JSON.parse(e.data);
               console.log(data);
+              const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit" });
               if(userName==data.username){
                 chatLog.innerHTML += `
                 <div class="message-box from-me">
-                  <p class="s-text">오전 8:20</p>
+                  <p class="s-text">${currentTime}</p>
                   <div class="message-text">${data.message}</div>
                 </div>`;
               }else{
                 chatLog.innerHTML += `
                 <div class="message-box from-you">
                   <div class="message-text">${data.message}</div>
-                  <p class="s-text">오전 8:20</p>
+                  <p class="s-text">${currentTime}</p>
                 </div>`;
               }
               chatLog.scrollTop = chatLog.scrollHeight;
@@ -157,18 +158,22 @@
                 .then(data => {
                     if ('messages' in data) {
                         data.messages.forEach(msg => {
-                          if(userName==msg.user){
+                        const inputDate = new Date(msg.timestamp);                 
+                        const formattedDate = inputDate.toLocaleTimeString([], { hour: '2-digit', minute: "2-digit" });
+
+                        if(userName==msg.user){
                             chatLog.innerHTML += `
                             <div class="message-box from-me">
-                              <p class="s-text">오전 8:20</p>
+                              <p class="s-text">${formattedDate}</p>
                               <div class="message-text">${msg.message}</div>
                             </div>`;
                           }else{
                             chatLog.innerHTML += `
                             <div class="message-box from-you">
                               <div class="message-text">${msg.message}</div>
-                              <p class="s-text">오전 8:20</p>
+                              <p class="s-text">${formattedDate}</p>
                             </div>`;
+                            console.log(msg)
                           }
                         });
                         chatLog.scrollTop = chatLog.scrollHeight;
