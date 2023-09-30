@@ -238,11 +238,9 @@ def create_post(request):
     return render(request, "trade/trade_post.html", {"form": form})
 
 
-def payments(request):
-    return render(
-        request,
-        "payments/index.html",
-    )
+def payments(request, pk):
+    post = get_object_or_404(Post, id=pk)
+    return render(request,"payments/index.html",{"post":post})
 
 
 def success(request):

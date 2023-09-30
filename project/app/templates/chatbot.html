@@ -27,7 +27,6 @@
 
               <!-- 아이디및 체크박스 -->
               <div class="id-box flex-box between">
-                아이디
                 <div>
                   <label>
                     안읽은 메세지만 보기
@@ -114,27 +113,30 @@ document.querySelector('#chat-message-input').onkeyup = function(e) {
     }
 };
 document.querySelector('#chat-message-submit').onclick = function(e) {
-    
+
+    const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit" });
     const chatLog = document.querySelector('.chat-container');
     const message = document.getElementById('chat-message-input').value;
     chatLog.innerHTML += `
                 <div class="message-box from-me">
-                  <p class="s-text">오전 8:20</p>
+                  <p class="s-text">${currentTime}</p>
                   <div class="message-text">${message}</div>
                 </div>`;
+                chatLog.scrollTop = chatLog.scrollHeight;
     const messageInputDom = document.getElementById('chat-message-input')
     generateResponse(message)
         .then(response => {
             chatLog.innerHTML += `
             <div class="message-box from-you">
               <div class="message-text">${response['response']}</div>
-              <p class="s-text">오전 8:20</p>
+              <p class="s-text">${currentTime}</p>
             </div>`;
+            chatLog.scrollTop = chatLog.scrollHeight;
         })
         .catch(error => {
         console.error(error);
         });
-        chatLog.scrollTop = chatLog.scrollHeight;
+        
     messageInputDom.value = '';
 };
 </script>
