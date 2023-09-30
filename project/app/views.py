@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.contrib import messages
-from .models import Post, UserProfile, Oldcar, Chat, ChatRoom
-from .forms import CustomLoginForm, CustomRegistrationForm, PostForm, OldcarForm
+from .models import Post, UserProfile, Oldcar, Chat, ChatRoom, Job
+from .forms import CustomLoginForm, CustomRegistrationForm, PostForm, OldcarForm, JobsForm
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
@@ -319,7 +319,8 @@ def test(request):
 
 
 def jobs(request):
-    return render(request, "jobs/jobs.html")
+    top_views_jobs = Job.objects.filter(product_sold="N").order_by("-view_num")
+    return render(request, "jobs/jobs.html", {"jobs": top_views_jobs})
 
 
 def oldcar(request):
@@ -499,3 +500,78 @@ def realty_post(request, pk):
     }
 
     return render(request, "realty/realty_post.html", context)
+
+def jobs_write(request):
+    try:
+        user_profile = UserProfile.objects.get(user=request.user)
+
+        if user_profile.region_certification == "Y":
+            return render(request, "jobs/jobs_write.html")
+        else:
+            return redirect("alert", alert_message="동네인증이 필요합니다.")
+    except UserProfile.DoesNotExist:
+        return redirect("alert", alert_message="동네인증이 필요합니다.")
+    except:
+        return redirect("login_alert")
+    
+@login_required
+def create_job(request):
+    if request.method == "POST":
+        form = JobsForm(request.POST, request.FILES)
+        if form.is_valid():
+            jobs = form.save(commit=False)
+            jobs.user = request.user
+            jobs.save()
+            return redirect("jobs_post", pk=jobs.pk)
+        else:
+            form = JobsForm()
+    return render(request, "jobs/jobs_post.html", {"form": form})
+
+def jobs_post(request, pk):
+    jobs = get_object_or_404(Job, pk=pk)
+
+    if request.user.is_authenticated:
+        if request.user != jobs.user:
+            jobs.view_num += 1
+            jobs.save()
+    else:
+        jobs.view_num += 1
+        jobs.save()
+
+    try:
+        user_profile = UserProfile.objects.get(user=jobs.user)
+    except UserProfile.DoesNotExist:
+        user_profile = None
+
+    context = {
+        "jobs": jobs,
+        "user_profile": user_profile,
+    }
+
+    return render(request, "jobs/jobs_post.html", context)
+
+def delete_jobs(request, id):
+    try:
+        jobs = Job.objects.get(id=id)
+        jobs.delete()
+        messages.success(request, "삭제되었습니다.")
+    except Job.DoesNotExist:
+        messages.error(request, "포스팅을 찾을 수 없습니다.")
+    return redirect("jobs")
+
+def edit_jobs(request, id):
+    jobs = get_object_or_404(Job, id=id)
+    if jobs:
+        jobs.description = jobs.description.strip()
+    if request.method == "POST":
+        jobs.title = request.POST["title"]
+        jobs.price = request.POST["price"]
+        jobs.description = request.POST["description"]
+        jobs.location = request.POST["location"]
+        jobs.working_days = request.POST["working_days"]
+        jobs.working_time = request.POST["working_time"]
+        if "images" in request.FILES:
+            jobs.images = request.FILES["images"]
+        jobs.save()
+        return redirect("jobs_post", pk=id)
+    return render(request, "jobs/jobs_write.html", {"jobs": jobs})

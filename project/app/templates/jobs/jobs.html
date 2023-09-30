@@ -1,4 +1,4 @@
-{% comment %} {% load custom_filter%} {% endcomment %}
+{% load custom_filter%}
 {% load static %}{% load humanize %}
 <!DOCTYPE html>
 <html>
@@ -15,7 +15,7 @@
   <body>
     {% include 'nav.html' %}
     <div class="content-box">
-      <a href="{% url 'write' %}">
+      <a href="{% url 'jobs_write' %}">
         <div class="floating-button">
           거래글쓰기
         </div>
@@ -39,30 +39,30 @@
     <div class="container column center">
       <div class="full-box trade-box column">
         <div class="flex-box full-box card-container between">
-          {% comment %} {% for post in posts %} {% endcomment %}
+          {% for job in jobs %}
 
             <div class="card-box">
-              <a href="{% url 'trade_post' 1 %}" class="trade-text-link">
+              <a href="{% url 'jobs_post' job.pk %}" class="trade-text-link">
                 <div class="card-img">
-                  {% comment %} {% if post.images %} {% endcomment %}
-                    <img src="" alt="title">
-                  {% comment %} {% endif %} {% endcomment %}
+                  {% if job.images %}
+                    <img src="{{ job.images.url }}" alt="title">
+                  {% endif %}
                 </div>
                 <div class="card-info-box">
-                  <h5>title</h5>
-                  <p class="bold">price 원</p>
-                  <p>location</p>
+                  <h5>{{ job.title }}</h5>
+                  <p class="bold">{{ job.price|intcomma }} 원</p>
+                  <p>{{ job.location }}</p>
                   <div class="flex-box">
                     <p>조회
-                      view_num</p>
+                      {{ job.view_num }}</p>
                     <p>·</p>
                     <p>채팅
-                      chat_num</p>
+                      {{ job.chat_num }}</p>
                   </div>
                 </div>
               </a>
             </div>
-          {% comment %} {% endfor %} {% endcomment %}
+          {% endfor %}
 
         </div>
       </div>

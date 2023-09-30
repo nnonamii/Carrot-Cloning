@@ -39,4 +39,9 @@ urlpatterns = [
     path("oldcar_create_form/", views.create_oldcar, name="oldcar_create_form"),
     path("chat_message/", views.chat_message, name="chat_message"),
     path("get_chat_messages/<str:room>/<int:post_id>/", views.get_chat_messages, name="get_chat_messages"),
+    path("jobs_write/",views.jobs_write, name="jobs_write"),
+    path("jobs_create_form/", views.create_job, name="create_job"),
+    path("jobs_post/<int:pk>/", views.jobs_post, name="jobs_post"),
+    path("delete_jobs/<int:id>/", views.delete_jobs, name="delete_jobs"),
+    path("edit_jobs/<int:id>/", views.edit_jobs, name="edit_jobs"),
 ]
