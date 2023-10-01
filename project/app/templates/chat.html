@@ -48,6 +48,15 @@
                   <p class="chat-thumb-text">궁금한 내용을 물어보세요!</p>
                 </div>
               </div>
+              <div class="chat-box flex-box" onclick="location.href='{% url 'coupang' %}'">
+                <div class="ai-profile">
+                  <img src="{% static 'img/coupang_logo.png'%}" alt="">
+                </div>
+                <div>
+                  <p class="bold">쿠팡 크롤링봇</p>
+                  <p class="chat-thumb-text">궁금한 내용을 물어보세요!</p>
+                </div>
+              </div>
               <!-- 채팅방리스트 -->
               {% for room, p in chat_room_list %}
                 <div class="flex-box chat-box between" onclick="location.href='{% url 'chat' room.user.username p.id %}'" {% if p.id == post.id %} style="background-color:#fa6616;" {% endif %}>

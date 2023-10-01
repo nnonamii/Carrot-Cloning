@@ -44,4 +44,6 @@ urlpatterns = [
     path("jobs_post/<int:pk>/", views.jobs_post, name="jobs_post"),
     path("delete_jobs/<int:id>/", views.delete_jobs, name="delete_jobs"),
     path("edit_jobs/<int:id>/", views.edit_jobs, name="edit_jobs"),
+    path("coupang/", views.coupang, name="coupang"),
+    path("execute_coupang/", views.execute_coupang, name="execute_coupang"),
 ]

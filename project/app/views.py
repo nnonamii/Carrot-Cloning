@@ -10,6 +10,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 
+from selenium import webdriver
+from selenium.webdriver.common.by import By
 import openai
 
 from .models import Post, UserProfile, Realty
@@ -575,3 +577,41 @@ def edit_jobs(request, id):
         jobs.save()
         return redirect("jobs_post", pk=id)
     return render(request, "jobs/jobs_write.html", {"jobs": jobs})
+
+def coupang(request):
+    try:
+        login_user = request.user
+        login_user_info = User.objects.get(username=login_user)
+        login_post_info = Post.objects.filter(user=login_user_info)
+        chat_room_ids = Chat.objects.filter(user=login_user_info).values_list('chat_room', flat=True).distinct()
+        
+        chat_rooms = ChatRoom.objects.filter(Q(id__in=chat_room_ids) | Q(post__in=login_post_info))
+        post_ids = chat_rooms.values_list('post', flat=True)
+        posts = Post.objects.filter(id__in=post_ids)
+        
+        other_user_chat = Chat.objects.filter(chat_room__in=chat_rooms).exclude(user=login_user_info).distinct()
+        other_user = User.objects.get(id=other_user_chat[0].user_id)
+    
+        chat_room_list =  zip(chat_rooms, posts)
+    except Chat.DoesNotExist:
+        chat_room_ids = None
+    except ChatRoom.DoesNotExist:
+        chat_rooms = None
+    return render(request, "coupang.html",{"chat_room_list":chat_room_list, "other_user":other_user})
+
+def execute_coupang(request):
+    if request.method == "POST":
+        data = json.loads(request.body.decode('utf-8'))
+        question = data.get('question')
+        driver = webdriver.Chrome()
+        url = "https://www.coupang.com/np/search?component=&q={}&channel=user".format(question)
+        driver.get(url)
+        driver.execute_script("window.scrollTo(0, 300);")
+        driver.implicitly_wait(5)
+        name_element = driver.find_element(By.CSS_SELECTOR, "div.name")
+        name = name_element.text
+        price_element = driver.find_element(By.CSS_SELECTOR, "strong.price-value")
+        price = price_element.text
+        response = f"상품정보 : {name}<br>----------------<br> 가격 : {price}원"
+        driver.quit()
+        return JsonResponse({"response": response})
