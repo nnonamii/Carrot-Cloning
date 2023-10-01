@@ -249,7 +249,7 @@ def success(request):
     orderId = request.GET.get("orderId")
     amount = request.GET.get("amount")
     paymentKey = request.GET.get("paymentKey")
-
+    orderName = request.GET.get("orderName")
     url = "https://api.tosspayments.com/v1/payments/confirm"
 
     secretKey = secret["TOSS_API_KEY"]
@@ -262,6 +262,7 @@ def success(request):
         "orderId": orderId,
         "amount": amount,
         "paymentKey": paymentKey,
+        "orderName": orderName,
     }
 
     res = requests.post(url, data=json.dumps(params), headers=headers)
@@ -270,16 +271,13 @@ def success(request):
 
     respaymentKey = resjson["paymentKey"]
     resorderId = resjson["orderId"]
-
-    return render(
-        request,
-        "payments/success.html",
-        {
-            "res": pretty,
-            "respaymentKey": respaymentKey,
-            "resorderId": resorderId,
-        },
-    )
+    resorderName = resjson["orderName"].split("|")[1]
+    post = get_object_or_404(Post, pk=resorderName)
+    user = post.user_id
+    post.product_sold = "Y"
+    post.save()
+    
+    return redirect("chat", room_name=user, pk=resorderName)
 
 
 def fail(request):

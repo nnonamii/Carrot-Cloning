@@ -31,15 +31,15 @@
     <div style="display:flex;justify-content: center;">
         <div id="payment-method" style="width:80%;"></div>
     </div>
-    <div style="display:flex;justify-content: center; margin-top:1em;">
-        <button id="payment-request-button">결제하기</button>
+    <div style="display:flex;justify-content: center; margin-top:1em; ">
+        <button id="payment-request-button" style="cursor: pointer;">결제하기</button>
     </div>
     
     {% include 'footer.html' %}
     <script>
       const paymentWidget = PaymentWidget("test_ck_XLkKEypNArWaNyp1leA3lmeaxYG5",PaymentWidget.ANONYMOUS);
 
-      paymentWidget.renderPaymentMethods("#payment-method", { value: 50000 });
+      paymentWidget.renderPaymentMethods("#payment-method", { value: {{ post.price }} });
 
       const paymentRequestButton = document.getElementById(
         "payment-request-button"
@@ -47,9 +47,8 @@
       paymentRequestButton.addEventListener("click", () => {
 
         paymentWidget.requestPayment({
-          amount : {{ post.price }},
           orderId: generateRandomString(),
-          orderName: "{{ post.title }}",
+          orderName: "{{ post.title }}|{{ post.id }}",
           successUrl: window.location.origin + "/success",
           failUrl: window.location.origin + "/fail",
         });
