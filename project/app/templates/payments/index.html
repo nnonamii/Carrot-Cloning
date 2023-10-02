@@ -6,30 +6,40 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>결제위젯 샘플</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/global.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/nav.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/footer.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}?{% now 'U' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/global.css' %}?{% now 'U' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/trade.css' %}?{% now "U" %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/nav.css' %}?{% now 'U' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/footer.css' %}?{% now 'U' %}"/>
     <script src="https://js.tosspayments.com/v1/payment-widget"></script>
   </head>
   <body>
     {% include 'nav.html' %}
-    
+    <div class="content-box">
+      <div class="about-trade">
+        <div class="container">
+          <div class="trade-text">
+            <h3>믿을만한</br>당근 결제</h3>
+          <p>토스 API를</br>지금 경험해보세요.</p>
+      </div>
+      <div class="thumbnail-img">
+        <img src="{% static 'img/img1.png' %}" alt=""/>
+      </div>
+    </div>
+  </div>
+
     <div style="display:flex;justify-content: center;">
         <div id="payment-method" style="width:80%;"></div>
     </div>
-    <div style="display:flex;justify-content: center;">
-        <button id="payment-request-button">결제하기</button>
+    <div style="display:flex;justify-content: center; margin-top:1em; ">
+        <button id="payment-request-button" style="cursor: pointer;">결제하기</button>
     </div>
     
     {% include 'footer.html' %}
     <script>
-      const paymentWidget = PaymentWidget(
-        "test_ck_XLkKEypNArWaNyp1leA3lmeaxYG5",
-        PaymentWidget.ANONYMOUS
-      );
+      const paymentWidget = PaymentWidget("test_ck_XLkKEypNArWaNyp1leA3lmeaxYG5",PaymentWidget.ANONYMOUS);
 
-      paymentWidget.renderPaymentMethods("#payment-method", { value: 50000 });
+      paymentWidget.renderPaymentMethods("#payment-method", { value: {{ post.price }} });
 
       const paymentRequestButton = document.getElementById(
         "payment-request-button"
@@ -38,7 +48,7 @@
 
         paymentWidget.requestPayment({
           orderId: generateRandomString(),
-          orderName: "토스 티셔츠 외 2건",
+          orderName: "{{ post.title }}|{{ post.id }}",
           successUrl: window.location.origin + "/success",
           failUrl: window.location.origin + "/fail",
         });
