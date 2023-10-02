@@ -1,7 +1,14 @@
 from django.http import JsonResponse
 from django.contrib import messages
 from .models import Post, UserProfile, Oldcar, Chat, ChatRoom, Job
-from .forms import CustomLoginForm, CustomRegistrationForm, PostForm, OldcarForm, JobsForm
+from .forms import (
+    CustomLoginForm,
+    CustomRegistrationForm,
+    PostForm,
+    OldcarForm,
+    JobsForm,
+    RealtyForm,
+)
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
@@ -43,30 +50,35 @@ def chat(request, room_name, pk):
     try:
         login_user_info = User.objects.get(username=login_user)
         login_post_info = Post.objects.filter(user=login_user_info)
-        chat_room_ids = Chat.objects.filter(user=login_user_info).values_list('chat_room', flat=True).distinct()
-        
+        chat_room_ids = (
+            Chat.objects.filter(user=login_user_info).values_list("chat_room", flat=True).distinct()
+        )
+
         chat_rooms = ChatRoom.objects.filter(Q(id__in=chat_room_ids) | Q(post__in=login_post_info))
-        post_ids = chat_rooms.values_list('post', flat=True)
+        post_ids = chat_rooms.values_list("post", flat=True)
         posts = Post.objects.filter(id__in=post_ids)
-        
-        other_user_chat = Chat.objects.filter(chat_room__in=chat_rooms).exclude(user=login_user_info).distinct()
+
+        other_user_chat = (
+            Chat.objects.filter(chat_room__in=chat_rooms).exclude(user=login_user_info).distinct()
+        )
         other_user = User.objects.get(id=other_user_chat[0].user_id)
-    
-        chat_room_list =  zip(chat_rooms, posts)
+
+        chat_room_list = zip(chat_rooms, posts)
     except Chat.DoesNotExist:
         chat_room_ids = None
     except ChatRoom.DoesNotExist:
         chat_rooms = None
-    
+
     data = {
-        "user":login_user,
-        "other_user":other_user, 
-        "room_name":room_name, 
+        "user": login_user,
+        "other_user": other_user,
+        "room_name": room_name,
         "post": post,
         "live_chat_room": live_chat_room,
-        "chat_room_list": chat_room_list
-        }
+        "chat_room_list": chat_room_list,
+    }
     return render(request, "chat.html", data)
+
 
 def chat_message(request):
     if request.method == "POST":
@@ -76,31 +88,38 @@ def chat_message(request):
         seller = User.objects.get(username=room_name)
         post = Post.objects.get(pk=post_id)
         chat_room = get_object_or_404(ChatRoom, user=seller, post=post)
-        
+
         chat = Chat.objects.create(chat_room=chat_room, user=request.user, message=message)
         chat.save()
-        
+
         return JsonResponse({"status": "success", "message": "Message saved successfully."})
     else:
-        return JsonResponse({"status": "error", "message": "Invalid request method."}, status=400)    
+        return JsonResponse({"status": "error", "message": "Invalid request method."}, status=400)
+
 
 def get_chat_messages(request, room, post_id):
     try:
         seller = User.objects.get(username=room)
         post = Post.objects.get(pk=post_id)
         chat_room = ChatRoom.objects.get(user=seller, post=post)
-        chat_messages = Chat.objects.filter(chat_room=chat_room).order_by('timestamp')
-        messages = [{'user': chat_message.user.username, 'message': chat_message.message, 'timestamp': chat_message.timestamp} for chat_message in chat_messages]
-        return JsonResponse({'messages': messages})
+        chat_messages = Chat.objects.filter(chat_room=chat_room).order_by("timestamp")
+        messages = [
+            {
+                "user": chat_message.user.username,
+                "message": chat_message.message,
+                "timestamp": chat_message.timestamp,
+            }
+            for chat_message in chat_messages
+        ]
+        return JsonResponse({"messages": messages})
     except User.DoesNotExist:
-        return JsonResponse({'error': 'User not found'}, status=404)
+        return JsonResponse({"error": "User not found"}, status=404)
     except ChatRoom.DoesNotExist:
-        return JsonResponse({'error': 'Chat room not found'}, status=404)
+        return JsonResponse({"error": "Chat room not found"}, status=404)
+
 
 def login_alert(request):
     return render(request, "user/login_alert.html")
-
-
 
 
 def trade(request):
@@ -242,7 +261,7 @@ def create_post(request):
 
 def payments(request, pk):
     post = get_object_or_404(Post, id=pk)
-    return render(request,"payments/index.html",{"post":post})
+    return render(request, "payments/index.html", {"post": post})
 
 
 def success(request):
@@ -276,7 +295,7 @@ def success(request):
     user = post.user_id
     post.product_sold = "Y"
     post.save()
-    
+
     return redirect("chat", room_name=user, pk=resorderName)
 
 
@@ -408,98 +427,160 @@ def set_region_certification(request):
         return redirect("location")
 
 
-def realty(request):
-    top_views_posts = Post.objects.filter(product_sold="N").order_by("-view_num")
-    return render(request, "realty/realty.html", {"posts": top_views_posts})
+openai.api_key = secret["AI_API_KEY"]
 
-openai.api_key = secret['AI_API_KEY']
 
 def chatbot(request):
     try:
         login_user = request.user
         login_user_info = User.objects.get(username=login_user)
         login_post_info = Post.objects.filter(user=login_user_info)
-        chat_room_ids = Chat.objects.filter(user=login_user_info).values_list('chat_room', flat=True).distinct()
-        
+        chat_room_ids = (
+            Chat.objects.filter(user=login_user_info).values_list("chat_room", flat=True).distinct()
+        )
+
         chat_rooms = ChatRoom.objects.filter(Q(id__in=chat_room_ids) | Q(post__in=login_post_info))
-        post_ids = chat_rooms.values_list('post', flat=True)
+        post_ids = chat_rooms.values_list("post", flat=True)
         posts = Post.objects.filter(id__in=post_ids)
-        
-        other_user_chat = Chat.objects.filter(chat_room__in=chat_rooms).exclude(user=login_user_info).distinct()
+
+        other_user_chat = (
+            Chat.objects.filter(chat_room__in=chat_rooms).exclude(user=login_user_info).distinct()
+        )
         other_user = User.objects.get(id=other_user_chat[0].user_id)
-    
-        chat_room_list =  zip(chat_rooms, posts)
+
+        chat_room_list = zip(chat_rooms, posts)
     except Chat.DoesNotExist:
         chat_room_ids = None
     except ChatRoom.DoesNotExist:
         chat_rooms = None
-    return render(request, "chatbot.html",{"chat_room_list":chat_room_list, "other_user":other_user})
+    return render(
+        request, "chatbot.html", {"chat_room_list": chat_room_list, "other_user": other_user}
+    )
 
-class ChatBot():
-    def __init__(self, model='gpt-3.5-turbo'):
+
+class ChatBot:
+    def __init__(self, model="gpt-3.5-turbo"):
         self.model = model
         self.messages = []
-        
+
     def ask(self, question):
-        self.messages.append({
-            'role': 'user', 
-            'content': question
-        })
+        self.messages.append({"role": "user", "content": question})
         res = self.__ask__()
         return res
-        
+
     def __ask__(self):
         completion = openai.ChatCompletion.create(
             # model 지정
             model=self.model,
-            messages=self.messages
+            messages=self.messages,
         )
-        response = completion.choices[0].message['content']
-        self.messages.append({
-            'role': 'assistant', 
-            'content': response
-        })
+        response = completion.choices[0].message["content"]
+        self.messages.append({"role": "assistant", "content": response})
         return response
-    
+
     def show_messages(self):
         return self.messages
-    
+
     def clear(self):
         self.messages.clear()
 
+
 def execute_chatbot(request):
     if request.method == "POST":
-        data = json.loads(request.body.decode('utf-8'))
-        question = data.get('question')
+        data = json.loads(request.body.decode("utf-8"))
+        question = data.get("question")
         chatbot = ChatBot()
         response = chatbot.ask(question)
         return JsonResponse({"response": response})
-    
-    
+
+
+def realty(request):
+    top_views_realty = Realty.objects.filter(product_sold="N").order_by("-view_num")
+    return render(request, "realty/realty.html", {"realty": top_views_realty})
 
 
 def realty_post(request, pk):
-    post = get_object_or_404(Realty, pk=pk)
+    realty = get_object_or_404(Realty, pk=pk)
 
     if request.user.is_authenticated:
-        if request.user != post.user:
-            post.view_num += 1
-            post.save()
+        if request.user != realty.user:
+            realty.view_num += 1
+            realty.save()
     else:
-        post.view_num += 1
-        post.save()
+        realty.view_num += 1
+        realty.save()
 
     try:
-        user_profile = UserProfile.objects.get(user=post.user)
+        user_profile = UserProfile.objects.get(user=realty.user)
     except UserProfile.DoesNotExist:
         user_profile = None
 
     context = {
-        "post": post,
+        "realty": realty,
         "user_profile": user_profile,
     }
 
     return render(request, "realty/realty_post.html", context)
+
+
+def realty_write(request):
+    try:
+        user_profile = UserProfile.objects.get(user=request.user)
+
+        if user_profile.region_certification == "Y":
+            return render(request, "realty/realty_write.html")
+        else:
+            return redirect("alert", alert_message="동네인증이 필요합니다.")
+    except UserProfile.DoesNotExist:
+        return redirect("alert", alert_message="동네인증이 필요합니다.")
+    except:
+        return redirect("login_alert")
+
+
+@login_required
+def create_realty(request):
+    if request.method == "POST":
+        form = RealtyForm(request.POST, request.FILES)
+        if form.is_valid():
+            realty = form.save(commit=False)
+            realty.user = request.user
+            realty.save()
+            return redirect("realty_post", pk=realty.pk)
+        else:
+            form = RealtyForm()
+    return render(request, "realty/realty_post.html", {"form": form})
+
+
+def delete_realty(request, id):
+    try:
+        realty = Realty.objects.get(id=id)
+        realty.delete()
+        messages.success(request, "삭제되었습니다.")
+    except Realty.DoesNotExist:
+        messages.error(request, "포스팅을 찾을 수 없습니다.")
+    return redirect("realty")
+
+
+def edit_realty(request, id):
+    realty = get_object_or_404(Realty, id=id)
+    if realty:
+        realty.description = realty.description.strip()
+    if request.method == "POST":
+        realty.title = request.POST["title"]
+        realty.property_type = request.POST["property_type"]
+        realty.deposit = request.POST["deposit"]
+        realty.monthly_rent = request.POST["monthly_rent"]
+        realty.area = request.POST["area"]
+        realty.rooms = request.POST["rooms"]
+        realty.floor = request.POST["floor"]
+        realty.description = request.POST["description"]
+        realty.location = request.POST["location"]
+        if "images" in request.FILES:
+            realty.images = request.FILES["images"]
+        realty.save()
+        return redirect("realty_post", pk=id)
+    return render(request, "realty/realty_write.html", {"realty": realty})
+
 
 def jobs_write(request):
     try:
@@ -513,7 +594,8 @@ def jobs_write(request):
         return redirect("alert", alert_message="동네인증이 필요합니다.")
     except:
         return redirect("login_alert")
-    
+
+
 @login_required
 def create_job(request):
     if request.method == "POST":
@@ -526,6 +608,7 @@ def create_job(request):
         else:
             form = JobsForm()
     return render(request, "jobs/jobs_post.html", {"form": form})
+
 
 def jobs_post(request, pk):
     jobs = get_object_or_404(Job, pk=pk)
@@ -550,6 +633,7 @@ def jobs_post(request, pk):
 
     return render(request, "jobs/jobs_post.html", context)
 
+
 def delete_jobs(request, id):
     try:
         jobs = Job.objects.get(id=id)
@@ -558,6 +642,7 @@ def delete_jobs(request, id):
     except Job.DoesNotExist:
         messages.error(request, "포스팅을 찾을 수 없습니다.")
     return redirect("jobs")
+
 
 def edit_jobs(request, id):
     jobs = get_object_or_404(Job, id=id)
@@ -576,31 +661,39 @@ def edit_jobs(request, id):
         return redirect("jobs_post", pk=id)
     return render(request, "jobs/jobs_write.html", {"jobs": jobs})
 
+
 def coupang(request):
     try:
         login_user = request.user
         login_user_info = User.objects.get(username=login_user)
         login_post_info = Post.objects.filter(user=login_user_info)
-        chat_room_ids = Chat.objects.filter(user=login_user_info).values_list('chat_room', flat=True).distinct()
-        
+        chat_room_ids = (
+            Chat.objects.filter(user=login_user_info).values_list("chat_room", flat=True).distinct()
+        )
+
         chat_rooms = ChatRoom.objects.filter(Q(id__in=chat_room_ids) | Q(post__in=login_post_info))
-        post_ids = chat_rooms.values_list('post', flat=True)
+        post_ids = chat_rooms.values_list("post", flat=True)
         posts = Post.objects.filter(id__in=post_ids)
-        
-        other_user_chat = Chat.objects.filter(chat_room__in=chat_rooms).exclude(user=login_user_info).distinct()
+
+        other_user_chat = (
+            Chat.objects.filter(chat_room__in=chat_rooms).exclude(user=login_user_info).distinct()
+        )
         other_user = User.objects.get(id=other_user_chat[0].user_id)
-    
-        chat_room_list =  zip(chat_rooms, posts)
+
+        chat_room_list = zip(chat_rooms, posts)
     except Chat.DoesNotExist:
         chat_room_ids = None
     except ChatRoom.DoesNotExist:
         chat_rooms = None
-    return render(request, "coupang.html",{"chat_room_list":chat_room_list, "other_user":other_user})
+    return render(
+        request, "coupang.html", {"chat_room_list": chat_room_list, "other_user": other_user}
+    )
+
 
 def execute_coupang(request):
     if request.method == "POST":
-        data = json.loads(request.body.decode('utf-8'))
-        question = data.get('question')
+        data = json.loads(request.body.decode("utf-8"))
+        question = data.get("question")
         driver = webdriver.Chrome()
         url = "https://www.coupang.com/np/search?component=&q={}&channel=user".format(question)
         driver.get(url)

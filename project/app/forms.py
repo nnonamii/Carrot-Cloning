@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post, Oldcar, Job
+from .models import Post, Oldcar, Job, Realty
 
 
 class CustomLoginForm(forms.Form):
@@ -54,7 +54,33 @@ class OldcarForm(forms.ModelForm):
             "insurance_history",
         ]
 
+
 class JobsForm(forms.ModelForm):
     class Meta:
         model = Job
-        fields = ["title", "price", "description", "location", "images", "working_days", "working_time"]
+        fields = [
+            "title",
+            "price",
+            "description",
+            "location",
+            "images",
+            "working_days",
+            "working_time",
+        ]
+
+
+class RealtyForm(forms.ModelForm):
+    class Meta:
+        model = Realty
+        fields = [
+            "title",
+            "property_type",
+            "deposit",
+            "monthly_rent",
+            "area",
+            "rooms",
+            "floor",
+            "description",
+            "location",
+            "images",
+        ]
