@@ -128,3 +128,26 @@ class Oldcar(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
+
+class MenuItem(models.Model):
+    menu_name = models.CharField(max_length=200)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return self.name
+
+class Store(models.Model):
+    store_name = models.CharField(verbose_name="가게이름", max_length=200)
+    location = models.CharField(verbose_name="지역", max_length=100)
+    semi_location = models.CharField(verbose_name="세미지역", max_length=100)
+    images = models.ImageField(verbose_name="대표 이미지", upload_to="stores_images/")
+    greetings = models.TextField(verbose_name="인삿말", max_length=200)
+    category = models.CharField(verbose_name="분야", max_length=10)
+    # connexion = models.IntegerField(verbose_name="단골")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, to_field="username")
+    days = models.CharField(verbose_name="요일", max_length=100)
+    open_time = models.CharField(verbose_name="여는 시간", max_length=100)
+    close_time = models.CharField(verbose_name="닫는 시간", max_length=100)
+    menu_items = models.ImageField(verbose_name="메뉴 이미지", upload_to="stores_images/")
+    def __str__(self):
+        return self.store_name

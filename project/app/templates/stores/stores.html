@@ -4,10 +4,10 @@
 <html>
 
   <head>
-    <title>중고거래</title>
+    <title>동네가게</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'css/global.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/trade.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/stores.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'css/nav.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'css/footer.css' %}"/>
   </head>
@@ -15,7 +15,7 @@
   <body>
     {% include 'nav.html' %}
     <div class="content-box">
-      <a href="{% url 'write' %}">
+      <a href="{% url 'stores_write' %}">
         <div class="floating-button">
           가게 소개하기
         </div>
@@ -39,30 +39,31 @@
     <div class="container column center">
       <div class="full-box trade-box column">
         <div class="flex-box full-box card-container between">
-          {% comment %} {% for post in posts %} {% endcomment %}
-
+          {% for store in stores %}
             <div class="card-box">
-              <a href="{% url 'trade_post' %}" class="trade-text-link">
+              <a href="{% url 'stores_post' store.pk %}" class="stores-text-link">
                 <div class="card-img">
-                  {% comment %} {% if post.images %} {% endcomment %}
-                    <img src="" alt="title">
-                  {% comment %} {% endif %} {% endcomment %}
+                  {% if store.images %}
+                    <img src="{{ store.images.url }}" alt="{{ store.store_name }}">
+                  {% endif %}
                 </div>
                 <div class="card-info-box">
-                  <h5>title</h5>
-                  <p class="bold">price 원</p>
-                  <p>location</p>
+                  <div class="title-location-box">
+                    <h3>{{store.store_name}}</h3>
+                    <p>{{store.semi_location}}</p>
+                  </div>
+                  <p>{{store.greetings}}</p>
                   <div class="flex-box">
-                    <p>조회
-                      view_num</p>
-                    <p>·</p>
-                    <p>채팅
-                      chat_num</p>
+                    <p>후기 1111</p>
+                    <p>&nbsp;·&nbsp;</p>
+                    <p>단골 {{store.connexion}}</p>
+                    <p>&nbsp;·&nbsp;</p>
+                    <p>{{store.category}}</p>
                   </div>
                 </div>
               </a>
             </div>
-          {% comment %} {% endfor %} {% endcomment %}
+          {% endfor %}
 
         </div>
       </div>
