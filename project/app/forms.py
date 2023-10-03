@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post, Oldcar
+from .models import Post, Oldcar, MenuItem, Store
 
 
 class CustomLoginForm(forms.Form):
@@ -53,3 +53,12 @@ class OldcarForm(forms.ModelForm):
             "car_info",
             "insurance_history",
         ]
+
+
+
+class StoreForm(forms.ModelForm):
+    class Meta:
+        model = Store
+        fields = ['store_name', 'location', 'semi_location',
+                   'greetings', 'category', 'days', 
+                  'open_time', 'close_time','images', 'menu_items']

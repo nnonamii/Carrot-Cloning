@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.contrib import messages
-from .models import Post, UserProfile, Oldcar
-from .forms import CustomLoginForm, CustomRegistrationForm, PostForm, OldcarForm
+from .models import Post, UserProfile, Oldcar, Store
+from .forms import CustomLoginForm, CustomRegistrationForm, PostForm, OldcarForm,StoreForm
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
@@ -321,8 +321,55 @@ def create_oldcar(request):
 
 
 def stores(request):
-    return render(request, "stores/stores.html")
+    top_views_stores = Store.objects.all()
+    return render(request, "stores/stores.html", {"stores": top_views_stores})
 
+def stores_post(request,pk):
+    store = get_object_or_404(Store, pk=pk)
+
+    if request.user.is_authenticated:
+        if request.user != store.user:
+            store.save()
+    else:
+        store.save()
+
+    try:
+        user_profile = UserProfile.objects.get(user=store.user)
+    except UserProfile.DoesNotExist:
+        user_profile = None
+
+    context = {
+        "store": store,
+        "user_profile": user_profile,
+    }
+
+    return render(request, "stores/stores_post.html", context)
+
+def stores_write(request):
+    try:
+        user_profile = UserProfile.objects.get(user=request.user)
+
+        if user_profile.region_certification == "Y":
+            return render(request, "stores/stores_write.html")
+        else:
+            return redirect("alert", alert_message="동네인증이 필요합니다.")
+    except UserProfile.DoesNotExist:
+        return redirect("alert", alert_message="동네인증이 필요합니다.")
+    except:
+        return redirect("login_alert")    
+
+@login_required
+def create_stores(request):
+    if request.method == "POST":
+        form = StoreForm(request.POST, request.FILES)
+        if form.is_valid():
+            store = form.save(commit=False)
+            store.user = request.user
+            store.save()
+            return redirect("stores_post", pk=store.pk)
+    else:
+        form = StoreForm()
+    return render(request, "stores/stores_post.html", {"form": form})   
 
 def set_region(request):
     if request.method == "POST":
