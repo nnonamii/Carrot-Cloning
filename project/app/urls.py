@@ -28,7 +28,14 @@ urlpatterns = [
     ),
     path("jobs/", views.jobs, name="jobs"),
     path("stores/", views.stores, name="stores"),
+    path("stores_post/<int:pk>/", views.stores_post, name="stores_post"),
+    path("stores_write/", views.stores_write, name="stores_write"),
+    path("stores_create_form/", views.create_stores, name="stores_create_form"),
+    path("stores_edit/<int:id>/", views.stores_edit, name="stores_edit"),
+    path("stores_delete/<int:id>/", views.stores_delete, name="stores_delete"),
+
     path("payments/<int:pk>/", views.payments, name="payments"),
+
     path("success/", views.success, name="success"),
     path("fail/", views.fail, name="fail"),
     path("realty/", views.realty, name="realty"),

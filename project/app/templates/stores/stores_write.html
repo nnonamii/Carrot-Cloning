@@ -20,7 +20,7 @@
         {% block content %}
           <div class="about-trade">
             <div class="container">
-              <form class="write-box" method="POST" action="{% if store %}{% url 'edit' store.id %}{% else %}{% url 'stores_create_form' %}{% endif %}" enctype="multipart/form-data">
+              <form class="write-box" method="POST" action="{% if store %}{% url 'stores_edit' store.id %}{% else %}{% url 'stores_create_form' %}{% endif %}" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="flex-box">
                   <label class="img-upload">
