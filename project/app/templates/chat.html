@@ -6,12 +6,12 @@
   <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/global.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/test.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/nav.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/footer.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/chat.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}?{% now "U" %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/global.css' %}?{% now "U" %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/test.css' %}?{% now "U" %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/nav.css' %}?{% now "U" %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/footer.css' %}?{% now "U" %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/chat.css' %}?{% now "U" %}"/>
     <title>채팅하기</title>
   </head>
 
@@ -27,10 +27,9 @@
 
               <!-- 아이디및 체크박스 -->
               <div class="id-box flex-box between">
-                아이디
                 <div>
                   <label>
-                    안읽은 메세지만 보기
+                    <p>안읽은 메세지만 보기</p>
                     <input type="checkbox" name="" id="">
                   </label>
                 </div>
@@ -49,20 +48,33 @@
                   <p class="chat-thumb-text">궁금한 내용을 물어보세요!</p>
                 </div>
               </div>
-              <!-- 채팅방리스트 -->
-              <div class="flex-box chat-box between">
-                <div>
-                  <div class="flex-box">
-                    <p class="bold">상대방아이디</p>
-                    <p class="s-text">화곡동</p>
-                    <p class="s-text">3주전</p>
-                  </div>
-                  <p class="chat-thumb-text">거래 잘 하셨나요? 거래한 이웃..</p>
+              <div class="chat-box flex-box" onclick="location.href='{% url 'coupang' %}'">
+                <div class="ai-profile">
+                  <img src="{% static 'img/coupang_logo.png'%}" alt="">
                 </div>
-                <div class="thumbnail-box">
-                  <img src="" alt="">
+                <div>
+                  <p class="bold">쿠팡 크롤링봇</p>
+                  <p class="chat-thumb-text">궁금한 내용을 물어보세요!</p>
                 </div>
               </div>
+              <!-- 채팅방리스트 -->
+              {% for room, p in chat_room_list %}
+                <div class="flex-box chat-box between" onclick="location.href='{% url 'chat' room.user.username p.id %}'" {% if p.id == post.id %} style="background-color:#fa6616;" {% endif %}>
+                  <div>
+                    <div class="flex-box">
+                      <p class="bold">
+                        {{ other_user }}
+                      </p>
+                      <p class="s-text">화곡동</p>
+                      <p class="s-text">3주전</p>
+                    </div>
+                    <p class="chat-thumb-text">거래 잘 하셨나요? 거래한 이웃..</p>
+                  </div>
+                  <div class="thumbnail-box">
+                    <img src="{{ p.images.url }}" alt="">
+                  </div>
+                </div>
+              {% endfor %}
             </div>
           </div>
 
@@ -70,7 +82,7 @@
           <div class="chat-main-container">
             <div>
               <div class="contact-info flex-box">
-                상대방아이디
+                {{ other_user }}
                 <div class="temp">
                   36.9도
                 </div>
@@ -80,14 +92,18 @@
               <div class="goods-box flex-box between">
                 <div class="flex-box">
                   <div class="selected-thumbnail-box">
-                    <img src="" alt="">
+                    <img src="{{ post.images.url }}" alt="{{ post.title }}">
                   </div>
                   <div class="goods-info-box">
-                    <p>LG 양문형 냉장고 778L</p>
-                    <p class="bold">150,000원</p>
+                    <p>{{ post.title }}</p>
+                    <p class="bold">{{ post.price|intcomma }}원</p>
                   </div>
                 </div>
-                <button>거래완료</button>
+                {% if post.product_sold == 'Y' %}
+                  <button style="background-color:#f3f3f3">거래완료</button>
+                {% else %}
+                  <button onclick="location.href='{% url 'payments' post.id %}'">거래가능</button>
+                {% endif %}    
               </div>
 
               <!--채팅창 메인-->
@@ -105,13 +121,18 @@
       </div>
       <input type="hidden" id="user-name" value="{{ user.username }}">
       <input type="hidden" id="room-name" value="{{ room_name }}">
+      <input type="hidden" id="post-id" value="{{ post.id }}">
     </div>
     {% include 'footer.html' %}
     <script>
+      
       document.addEventListener("DOMContentLoaded", function() {
           const roomName = document.getElementById('room-name').value; // 페이지에서 room_name을 가져옵니다
           const userName = document.getElementById('user-name').value;
-  
+          const postId = document.getElementById('post-id').value;
+          const chatLog = document.querySelector('.chat-container');
+
+          
           const chatSocket = new WebSocket(
               'ws://'
               + window.location.host
@@ -119,28 +140,59 @@
               + roomName
               + '/'
           );
-  
+
           chatSocket.onmessage = function(e) {
               const data = JSON.parse(e.data);
               console.log(data);
-              const chatLog = document.querySelector('.chat-container');
+              const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit" });
               if(userName==data.username){
                 chatLog.innerHTML += `
                 <div class="message-box from-me">
-                  <p class="s-text">오전 8:20</p>
+                  <p class="s-text">${currentTime}</p>
                   <div class="message-text">${data.message}</div>
                 </div>`;
               }else{
                 chatLog.innerHTML += `
                 <div class="message-box from-you">
                   <div class="message-text">${data.message}</div>
-                  <p class="s-text">오전 8:20</p>
+                  <p class="s-text">${currentTime}</p>
                 </div>`;
               }
               chatLog.scrollTop = chatLog.scrollHeight;
               
           };
-  
+          function getChatMessages(roomName, postId, userName) {
+            fetch(`/get_chat_messages/${roomName}/${postId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if ('messages' in data) {
+                        data.messages.forEach(msg => {
+                        const inputDate = new Date(msg.timestamp);                 
+                        const formattedDate = inputDate.toLocaleTimeString([], { hour: '2-digit', minute: "2-digit" });
+
+                        if(userName==msg.user){
+                            chatLog.innerHTML += `
+                            <div class="message-box from-me">
+                              <p class="s-text">${formattedDate}</p>
+                              <div class="message-text">${msg.message}</div>
+                            </div>`;
+                          }else{
+                            chatLog.innerHTML += `
+                            <div class="message-box from-you">
+                              <div class="message-text">${msg.message}</div>
+                              <p class="s-text">${formattedDate}</p>
+                            </div>`;
+                            console.log(msg)
+                          }
+                        });
+                        chatLog.scrollTop = chatLog.scrollHeight;
+                    } else if ('error' in data) {
+                        console.error('Error:', data.error);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+        getChatMessages(roomName, postId,userName);
           chatSocket.onclose = function(e) {
               console.error('Chat socket closed unexpectedly');
           };
@@ -155,13 +207,32 @@
           document.querySelector('#chat-message-submit').onclick = function(e) {
               const messageInputDom = document.querySelector('#chat-message-input');
               const message = messageInputDom.value;
-              chatSocket.send(JSON.stringify({
-                  'username': userName,
-                  'message': message
-              }));
+              
+              let formData = new FormData();
+              formData.append('username', userName);
+              formData.append('message', message);
+              formData.append('room_name', roomName);
+              formData.append('post_id', postId);
+              fetch("/chat_message/", {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}', // CSRF 토큰을 함께 보냅니다.
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            });
+            
+            chatSocket.send(JSON.stringify({
+              'username': userName,
+              'message': message
+            }));
               messageInputDom.value = '';
           };
       });
+      
   </script>
   </body>
 

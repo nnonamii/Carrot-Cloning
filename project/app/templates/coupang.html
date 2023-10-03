@@ -39,7 +39,7 @@
             <!-- 채팅 리스트 -->
             <div class="chat-list-box flex-box column">
               <!-- 봇 -->
-              <div class="chat-box flex-box" style="background-color:#fa6616;">
+              <div class="chat-box flex-box" onclick="location.href='{% url 'chatbot' %}'">
                 <div class="ai-profile">
                   <img src="{% static 'img/icon_aibot.png'%}" alt="">
                 </div>
@@ -48,12 +48,12 @@
                   <p class="chat-thumb-text">궁금한 내용을 물어보세요!</p>
                 </div>
               </div>
-              <div class="chat-box flex-box" onclick="location.href='{% url 'coupang' %}'">
+              <div class="chat-box flex-box" style="background-color:#fa6616;">
                 <div class="ai-profile">
                   <img src="{% static 'img/coupang_logo.png'%}" alt="">
                 </div>
                 <div>
-                  <p class="bold">쿠팡 크롤링봇</p>
+                  <p class="bold">쿠팡 챗봇</p>
                   <p class="chat-thumb-text">궁금한 내용을 물어보세요!</p>
                 </div>
               </div>
@@ -80,7 +80,7 @@
           <div class="chat-main-container">
             <div>
               <div class="contact-info flex-box">
-                언제나 뜨거운 챗봇
+                쿠팡 가격 정보 챗봇
                 <div class="temp">
                   99.9도
                 </div>
@@ -101,52 +101,52 @@
     </div>
     {% include 'footer.html' %}
   </body>
-<script>
-async function generateResponse(input) {
-    const response = await fetch('/execute_chatbot/', {
-        method: 'POST',
-        headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': '{{ csrf_token }}',
-        },
-        body: JSON.stringify({ question: input }),
-    });
-    
-    const data = await response.json();
-    return data;
-    }
-document.querySelector('#chat-message-input').focus();
-document.querySelector('#chat-message-input').onkeyup = function(e) {
-    if (e.keyCode === 13) {  // enter, return
-        document.querySelector('#chat-message-submit').click();
-    }
-};
-document.querySelector('#chat-message-submit').onclick = function(e) {
-
-    const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit" });
-    const chatLog = document.querySelector('.chat-container');
-    const message = document.getElementById('chat-message-input').value;
-    chatLog.innerHTML += `
-                <div class="message-box from-me">
-                  <p class="s-text">${currentTime}</p>
-                  <div class="message-text">${message}</div>
-                </div>`;
-                chatLog.scrollTop = chatLog.scrollHeight;
-    const messageInputDom = document.getElementById('chat-message-input')
-    generateResponse(message)
-        .then(response => {
-            chatLog.innerHTML += `
-            <div class="message-box from-you">
-              <div class="message-text">${response['response']}</div>
-              <p class="s-text">${currentTime}</p>
-            </div>`;
-            chatLog.scrollTop = chatLog.scrollHeight;
-        })
-        .catch(error => {
-        console.error(error);
+  <script>
+    async function generateResponse(input) {
+        const response = await fetch('/execute_coupang/', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}',
+            },
+            body: JSON.stringify({ question: input }),
         });
         
-    messageInputDom.value = '';
-};
-</script>
+        const data = await response.json();
+        return data;
+        }
+    document.querySelector('#chat-message-input').focus();
+    document.querySelector('#chat-message-input').onkeyup = function(e) {
+        if (e.keyCode === 13) {  // enter, return
+            document.querySelector('#chat-message-submit').click();
+        }
+    };
+    document.querySelector('#chat-message-submit').onclick = function(e) {
+    
+        const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit" });
+        const chatLog = document.querySelector('.chat-container');
+        const message = document.getElementById('chat-message-input').value;
+        chatLog.innerHTML += `
+                    <div class="message-box from-me">
+                      <p class="s-text">${currentTime}</p>
+                      <div class="message-text">${message}</div>
+                    </div>`;
+                    chatLog.scrollTop = chatLog.scrollHeight;
+        const messageInputDom = document.getElementById('chat-message-input')
+        generateResponse(message)
+            .then(response => {
+                chatLog.innerHTML += `
+                <div class="message-box from-you">
+                  <div class="message-text">${response['response']}</div>
+                  <p class="s-text">${currentTime}</p>
+                </div>`;
+                chatLog.scrollTop = chatLog.scrollHeight;
+            })
+            .catch(error => {
+            console.error(error);
+            });
+            
+        messageInputDom.value = '';
+    };
+    </script>
 </html>
