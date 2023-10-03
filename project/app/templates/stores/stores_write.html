@@ -1,0 +1,73 @@
+{% load custom_filter %}
+{% load static %}{% load humanize %}
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>소개글 글쓰기</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/global.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/write.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/nav.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/footer.css' %}"/>
+  </head>
+
+  <body>
+    {% include 'nav.html' %}
+    <div class="content-box">
+      <div class="container">
+
+        {% block content %}
+          <div class="about-trade">
+            <div class="container">
+              <form class="write-box" method="POST" action="{% if store %}{% url 'edit' store.id %}{% else %}{% url 'stores_create_form' %}{% endif %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="flex-box">
+                  <label class="img-upload">
+                    <img src="{% if store %}{{ store.images.url }}{% else %}{% static 'img/icon_photo.png' %}{% endif %}" alt="이미지 설명" id="imagePreview">
+                    <input type="file" name="images" accept="image/*" style="display: none;" onchange="previewImage(event);">
+                  </label>
+                  <div>
+                    <div class="flex-box column baseline title-box">
+                      <label for="store_name">가게 이름</label>
+                      <input type="text" name="store_name" placeholder="가게 이름" required="required" value="{% if store %}{{ store.store_name }}{% endif %}">
+                      <label for=" location">위치(전체주소)</label>
+                      <input type="text" name="location" placeholder="위치(전체 주소)" required="required" value="{% if store %}{{ store.location }}{% endif %}">
+                      <label for=" semi_location">위치(동만 입력)</label>
+                      <input type="text" name="semi-location" placeholder="위치(전체 주소)" required="required" value="{% if store %}{{ store.semi_location }}{% endif %}">
+                      <label for=" greetings">인삿말</label>
+                      <input type="text" name="greetings" placeholder="인삿말(간단하게)" required="required" value="{% if store %}{{ store.greetings }}{% endif %}">
+                      <label for=" category">분야</label>
+                      <input type="text" name="category" placeholder="분야" required="required" value="{% if store %}{{ store.category }}{% endif %}">
+                      <label for=" days">오픈하는 요일</label>
+                      <input type="text" name="days" placeholder="오픈 요일" required="required" value="{% if store %}{{ store.days }}{% endif %}">
+                      <label for=" open_time">여는 시간</label>
+                      <input type="text" name="open_time" placeholder="여는 시간" required="required" value="{% if store %}{{ store.open_time }}{% endif %}">
+                      <label for=" close_time">닫는 시간</label>
+                      <input type="text" name="close_time" placeholder="닫는 시간" required="required" value="{% if store %}{{ store.close_time }}{% endif %}">
+                    </div>
+                  </div>
+                </div>
+                <div class="flex-box">
+                  <h2>메뉴</h2>
+                  <label class="img-upload">
+                    <img src="{% if store %}{{ store.menu_items.url }}{% else %}{% static 'img/icon_photo.png' %}{% endif %}" alt="이미지 설명" id="imagePreview_menu">
+                    <input type="file" name="menu_items" accept="image/*" style="display: none;" onchange="previewImage_menu(event);">
+                  </label>
+                </div>
+                <div class="submit-button-box">
+                  {% if store %}
+                   <button type="submit">수정하기</button>
+                  {% else %}
+                   <button type="submit">전송</button>
+                  {% endif %}
+                </div>
+              </form>
+          </div>
+        </div>
+        {% endblock %}
+        <script type="text/javascript" src="{% static 'js/write.js' %}"></script>
+
+      </body>
+
+    </html>
