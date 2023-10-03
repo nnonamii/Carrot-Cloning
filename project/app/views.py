@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 from django.contrib import messages
+
 from .forms import CustomLoginForm, CustomRegistrationForm, PostForm, OldcarForm, StoreForm, JobsForm, RealtyForm
 from .models import Post, UserProfile, Oldcar, Chat, ChatRoom, Job, Store, Realty
 from django.shortcuts import render, redirect, get_object_or_404
@@ -13,7 +14,9 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 import openai
 
-from django.db.models import Q
+from django.db.models import Q, F, IntegerField, ExpressionWrapper
+from django.db.models.functions import Extract
+
 
 # Create your views here.
 import requests, json, base64, time
@@ -387,6 +390,15 @@ def create_oldcar(request):
     return render(request, "oldcar/oldcar_post.html", {"form": form})
 
 
+
+def stores(request):
+    top_views_stores = Store.objects.all()
+    return render(request, "stores/stores.html", {"stores": top_views_stores})
+
+
+def stores_post(request, pk):
+    store = get_object_or_404(Store, pk=pk)
+
 def oldcar_edit(request, id):
     oldcar = get_object_or_404(Oldcar, id=id)
     if oldcar:
@@ -405,6 +417,7 @@ def oldcar_edit(request, id):
     return render(request, "oldcar/write.html", {"post": oldcar})
 
 
+
 def oldcar_delete(request, id):
     try:
         oldcar = Oldcar.objects.get(id=id)
@@ -415,8 +428,24 @@ def oldcar_delete(request, id):
     return redirect("oldcar")
 
 
+
+def stores_write(request):
+    try:
+        user_profile = UserProfile.objects.get(user=request.user)
+
+        if user_profile.region_certification == "Y":
+            return render(request, "stores/stores_write.html")
+        else:
+            return redirect("alert", alert_message="동네인증이 필요합니다.")
+    except UserProfile.DoesNotExist:
+        return redirect("alert", alert_message="동네인증이 필요합니다.")
+    except:
+        return redirect("login_alert")
+
+
 def stores(request):
     return render(request, "stores/stores.html")
+
 
 @login_required
 def create_stores(request):
@@ -431,7 +460,8 @@ def create_stores(request):
             print(form.errors)
     else:
         form = StoreForm()
-    return render(request, "stores/stores_post.html", {"form": form})   
+    return render(request, "stores/stores_post.html", {"form": form})
+
 
 def set_region(request):
     if request.method == "POST":
@@ -530,6 +560,33 @@ def execute_chatbot(request):
         chatbot = ChatBot()
         response = chatbot.ask(question)
         return JsonResponse({"response": response})
+
+
+
+def realty(request):
+    # 게시물을 조회수와 작성일자에 따라 정렬합니다.
+    top_views_realty = (
+        Realty.objects.filter(product_sold="N")
+        .annotate(
+            view_rank=ExpressionWrapper(-F("view_num"), output_field=IntegerField()),
+            creation_year=Extract("created_at", "year"),
+            creation_month=Extract("created_at", "month"),
+            creation_day=Extract("created_at", "day"),
+            creation_hour=Extract("created_at", "hour"),
+            creation_minute=Extract("created_at", "minute"),
+        )
+        .order_by(
+            "view_rank",
+            "-creation_year",
+            "-creation_month",
+            "-creation_day",
+            "-creation_hour",
+            "-creation_minute",
+        )
+    )
+
+    return render(request, "realty/realty.html", {"realty": top_views_realty})
+
 
 
 def realty_post(request, pk):
