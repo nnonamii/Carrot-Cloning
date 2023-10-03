@@ -1,17 +1,7 @@
 from django.http import JsonResponse
 from django.contrib import messages
-from .models import Post, UserProfile, Oldcar, Store
-from .forms import CustomLoginForm, CustomRegistrationForm, PostForm, OldcarForm,StoreForm
-from .models import Post, UserProfile, Oldcar, Chat, ChatRoom, Job
-from .forms import (
-    CustomLoginForm,
-    CustomRegistrationForm,
-    PostForm,
-    OldcarForm,
-    JobsForm,
-    RealtyForm,
-)
-
+from .forms import CustomLoginForm, CustomRegistrationForm, PostForm, OldcarForm, StoreForm, JobsForm, RealtyForm
+from .models import Post, UserProfile, Oldcar, Chat, ChatRoom, Job, Store, Realty
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -23,7 +13,6 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 import openai
 
-from .models import Post, UserProfile, Realty
 from django.db.models import Q
 
 # Create your views here.
@@ -445,6 +434,8 @@ def create_stores(request):
             store.user = request.user
             store.save()
             return redirect("stores_post", pk=store.pk)
+        else:
+            print(form.errors)
     else:
         form = StoreForm()
     return render(request, "stores/stores_post.html", {"form": form})   
@@ -655,7 +646,9 @@ def create_job(request):
             jobs.save()
             return redirect("jobs_post", pk=jobs.pk)
         else:
-            form = JobsForm()
+            print(form.errors)
+    else:
+        form = JobsForm()
     return render(request, "jobs/jobs_post.html", {"form": form})
 
 

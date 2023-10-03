@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     "channels",
     "channels_redis",
     "app",
-    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -56,7 +55,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = "project.urls"
@@ -95,7 +93,7 @@ CHANNEL_LAYERS = {
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "dangeun",
+        "NAME": "teletubbies",
         "USER": "postgres",
         "PASSWORD": secret["POSTGRES_PASSWORD"],
         "HOST": secret["HOST"],

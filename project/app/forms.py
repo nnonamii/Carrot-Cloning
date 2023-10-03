@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post, Oldcar, Job, Realty, MenuItem, Store
+from .models import Post, Oldcar, Job, Realty, Store
 
 
 
