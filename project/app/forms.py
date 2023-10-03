@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post, Oldcar, MenuItem, Store, Job
+from .models import Post, Oldcar, Job, Realty, MenuItem, Store
 
 
 
@@ -67,4 +67,29 @@ class StoreForm(forms.ModelForm):
 class JobsForm(forms.ModelForm):
     class Meta:
         model = Job
-        fields = ["title", "price", "description", "location", "images", "working_days", "working_time"]
+        fields = [
+            "title",
+            "price",
+            "description",
+            "location",
+            "images",
+            "working_days",
+            "working_time",
+        ]
+
+
+class RealtyForm(forms.ModelForm):
+    class Meta:
+        model = Realty
+        fields = [
+            "title",
+            "property_type",
+            "deposit",
+            "monthly_rent",
+            "area",
+            "rooms",
+            "floor",
+            "description",
+            "location",
+            "images",
+        ]
