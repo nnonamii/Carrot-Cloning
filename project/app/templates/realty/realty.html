@@ -3,49 +3,49 @@
 <!DOCTYPE html>
 <html>
 
-  <head>
-    <title>부동산거래</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}?{% now "U" %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/global.css' %}?{% now "U" %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/realty.css' %}?{% now "U" %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/nav.css' %}?{% now "U" %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/footer.css' %}?{% now "U" %}"/>
-  </head>
+<head>
+  <title>부동산거래</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}?{% now " U" %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/global.css' %}?{% now " U" %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/realty.css' %}?{% now " U" %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/nav.css' %}?{% now " U" %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/footer.css' %}?{% now " U" %}" />
+</head>
 
-  <body>
-    {% include 'nav.html' %}
-    <div class="content-box">
-      <a href="{% url 'realty_write' %}">
-        <div class="floating-button">
-          거래글쓰기
-        </div>
-      </a>
-      <div class="about-trade">
-        <div class="container">
-          <div class="trade-text">
-            <h3>복비없이 투명한</br>부동산 직거래</h3>
+<body>
+  {% include 'nav.html' %}
+  <div class="content-box">
+    <a href="{% url 'realty_write' %}">
+      <div class="floating-button">
+        거래글쓰기
+      </div>
+    </a>
+    <div class="about-trade">
+      <div class="container">
+        <div class="trade-text">
+          <h3>복비없이 투명한</br>부동산 직거래</h3>
           <p>이웃이 살던 집, 당근에서</br>편하게 직거래해보세요.</p>
-      </div>
-      <div class="thumbnail-img">
-        <img src="{% static 'img/realty.png' %}" alt=""/>
+        </div>
+        <div class="thumbnail-img">
+          <img src="{% static 'img/realty.png' %}" alt="" />
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="post-box">
-    <div class="container column center">
-      <h1>인기 부동산 직거래 게시글</h1>
-    </div>
-    <div class="container column center">
-      <div class="full-box trade-box column">
-        <div class="flex-box full-box card-container between">
-          {% for realty in realty %}
+    <div class="post-box">
+      <div class="container column center">
+        <h1>인기 부동산</h1>
+      </div>
+      <div class="container column center">
+        <div class="full-box trade-box column">
+          <div class="flex-box full-box card-container between">
+            {% for realty in realty %}
 
             <div class="card-box">
               <a href="{% url 'realty_post' realty.pk %}" class="trade-text-link">
                 <div class="card-img">
                   {% if realty.images %}
-                    <img src="{{ realty.images.url }}" alt="{{ realty.title }}">
+                  <img src="{{ realty.images.url }}" alt="{{ realty.title }}">
                   {% endif %}
                 </div>
                 <div class="card-info-box">
@@ -62,13 +62,13 @@
                 </div>
               </a>
             </div>
-          {% endfor %}
+            {% endfor %}
 
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  {% include 'footer.html' %}
+    {% include 'footer.html' %}
 
 </body>
 
