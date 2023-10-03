@@ -32,13 +32,13 @@
                       <label for="title">글 제목</label>
                       <input type="text" name="title" placeholder="글 제목" required="required" value="{% if realty %}{{ realty.title }}{% endif %}">
                       <label for="property_type">매물 종류</label>
-                      <input type="text" name="property_type" placeholder="매물 종류" required="required" value="{% if realty %}{{ realty.property_type }}{% endif %}">
+                      <input type="text" name="property_type" placeholder="예: 아파트" required="required" value="{% if realty %}{{ realty.property_type }}{% endif %}">
                       <label for="deposit">보증금</label>
-                      <input type="text" name="deposit" placeholder="보증금" required="required" value="{% if realty %}{{ realty.deposit }}{% endif %}">
+                      <input type="text" name="deposit" placeholder="보증금 (만 원)" required="required" value="{% if realty %}{{ realty.deposit }}{% endif %}">
                       <label for="monthly_rent">월세</label>
-                      <input type="text" name="monthly_rent" placeholder="월세" required="required" value="{% if realty %}{{ realty.monthly_rent }}{% endif %}">
-                      <label for="area">면적_평수</label>
-                      <input type="text" name="area" placeholder="면적_평수" required="required" value="{% if realty %}{{ realty.area }}{% endif %}">
+                      <input type="text" name="monthly_rent" placeholder="월세 (만 원)" required="required" value="{% if realty %}{{ realty.monthly_rent }}{% endif %}">
+                      <label for="area">면적</label>
+                      <input type="text" name="area" placeholder="평 수" required="required" value="{% if realty %}{{ realty.area }}{% endif %}">
                       <label for="rooms">방 수</label>
                       <input type="text" name="rooms" placeholder="방 수" required="required" value="{% if realty %}{{ realty.rooms }}{% endif %}">
                       <label for="floor">층 수</label>
@@ -56,7 +56,7 @@
                 </div>
                 <div class="full-box">
                   <label for="location" class="block-box">매물 위치</label>
-                  <input type="text" name="location" placeholder="매물 위치" required="required" value="{% if realty %}{{ realty.location }}{% endif %}">
+                  <input type="text" name="location" placeholder="예: 부산 동래구 명륜동" required="required" value="{% if realty %}{{ realty.location }}{% endif %}">
                 </div>
                 <div class="submit-button-box">
                   {% if realty %}

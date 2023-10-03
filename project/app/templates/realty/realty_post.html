@@ -49,12 +49,12 @@
         <hr class="line">
         <div class="post-info-box">
           <div class="flex-box between">
-            <h3>{{ realty.title }}</h3>
             <h3>{{ realty.property_type }}</h3>
-            <h3>보증금 {{ realty.deposit |intcomma}}만 원 | 월세 {{ realty.monthly_rent |intcomma}}만 원</h3>
+            <h3>{{ realty.title }}</h3>
+            <h3>보증금 {{ realty.deposit|intcomma }}천만 원 | 월세 {{ realty.monthly_rent|intcomma }}만 원</h3>
           </div>
-          <p>{{ realty.description }}</p>
-          <p>면적_평수 | {{ realty.area }}</p>
+          <p>{{ realty.description |linebreaks }}</p>
+          <p>면적 | {{ realty.area }}평</p>
           <p>방 수 | {{ realty.rooms }}</p>
           <p>층 수 | {{ realty.floor }}</p>
           <div class="location-views-box flex-box between">
@@ -81,7 +81,7 @@
         // 사용자가 확인 대화 상자에서 취소를 눌렀을 때의 동작 (아무 동작 없음)
       }
     }
-    
+  
   </script>
 
 </body>
