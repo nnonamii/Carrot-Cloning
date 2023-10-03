@@ -12,8 +12,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 
-from selenium import webdriver
-from selenium.webdriver.common.by import By
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By
 import openai
 
 from .models import Post, UserProfile, Realty
@@ -429,6 +429,36 @@ def create_stores(request):
     else:
         form = StoreForm()
     return render(request, "stores/stores_post.html", {"form": form})   
+
+def stores_edit(request, id):
+    store = get_object_or_404(Store, id=id)
+    if store:
+        store.greetings = store.greetings.strip()
+    if request.method == "POST":
+        store.store_name = request.POST["store_name"]
+        store.location = request.POST["location"]
+        store.semi_location = request.POST["semi_location"]
+        store.greetings = request.POST["greetings"]
+        store.category = request.POST["category"]
+        store.days = request.POST["days"]
+        store.open_time = request.POST["open_time"]
+        store.close_time = request.POST["close_time"]
+        if "images" in request.FILES:
+            store.images = request.FILES["images"]
+        if "menu_items" in request.FILES:
+            store.menu_items = request.FILES["menu_items"]
+        store.save()
+        return redirect("stores_post", pk=id)
+    return render(request, "stores/stores_write.html", {"store": store})
+
+def stores_delete(request, id):
+    try:
+        store = Store.objects.get(id=id)
+        store.delete()
+        messages.success(request, "삭제되었습니다.")
+    except store.DoesNotExist:
+        messages.error(request, "포스팅을 찾을 수 없습니다.")
+    return redirect("stores")
 
 def set_region(request):
     if request.method == "POST":

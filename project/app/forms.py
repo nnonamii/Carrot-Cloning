@@ -63,6 +63,7 @@ class StoreForm(forms.ModelForm):
         fields = ['store_name', 'location', 'semi_location',
                    'greetings', 'category', 'days', 
                   'open_time', 'close_time','images', 'menu_items']
+        
 class JobsForm(forms.ModelForm):
     class Meta:
         model = Job

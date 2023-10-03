@@ -20,7 +20,7 @@
         {% block content %}
           <div class="about-trade">
             <div class="container">
-              <form class="write-box" method="POST" action="{% if store %}{% url 'edit' store.id %}{% else %}{% url 'stores_create_form' %}{% endif %}" enctype="multipart/form-data">
+              <form class="write-box" method="POST" action="{% if store %}{% url 'stores_edit' store.id %}{% else %}{% url 'stores_create_form' %}{% endif %}" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="flex-box">
                   <label class="img-upload">
@@ -34,7 +34,7 @@
                       <label for=" location">위치(전체주소)</label>
                       <input type="text" name="location" placeholder="위치(전체 주소)" required="required" value="{% if store %}{{ store.location }}{% endif %}">
                       <label for=" semi_location">위치(동만 입력)</label>
-                      <input type="text" name="semi-location" placeholder="위치(전체 주소)" required="required" value="{% if store %}{{ store.semi_location }}{% endif %}">
+                      <input type="text" name="semi_location" placeholder="위치(전체 주소)" required="required" value="{% if store %}{{ store.semi_location }}{% endif %}">
                       <label for=" greetings">인삿말</label>
                       <input type="text" name="greetings" placeholder="인삿말(간단하게)" required="required" value="{% if store %}{{ store.greetings }}{% endif %}">
                       <label for=" category">분야</label>
