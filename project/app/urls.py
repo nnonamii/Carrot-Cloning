@@ -33,13 +33,15 @@ urlpatterns = [
     path("stores_create_form/", views.create_stores, name="stores_create_form"),
     path("stores_edit/<int:id>/", views.stores_edit, name="stores_edit"),
     path("stores_delete/<int:id>/", views.stores_delete, name="stores_delete"),
-
     path("payments/<int:pk>/", views.payments, name="payments"),
-
     path("success/", views.success, name="success"),
     path("fail/", views.fail, name="fail"),
     path("realty/", views.realty, name="realty"),
     path("realty_post/<int:pk>/", views.realty_post, name="realty_post"),
+    path("realty_write/", views.realty_write, name="realty_write"),
+    path("realty_create_form/", views.create_realty, name="create_realty"),
+    path("delete_realty/<int:id>/", views.delete_realty, name="delete_realty"),
+    path("edit_realty/<int:id>/", views.edit_realty, name="edit_realty"),
     path("oldcar/", views.oldcar, name="oldcar"),
     path("chatbot/", views.chatbot, name="chatbot"),
     path("execute_chatbot/", views.execute_chatbot, name="execute_chatbot"),
