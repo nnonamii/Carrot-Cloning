@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.contrib import messages
 from .models import Post, UserProfile, Oldcar, Store
-from .forms import CustomLoginForm, CustomRegistrationForm, PostForm, OldcarForm,StoreForm
+from .forms import CustomLoginForm, CustomRegistrationForm, PostForm, OldcarForm, StoreForm
 from .models import Post, UserProfile, Oldcar, Chat, ChatRoom, Job
 from .forms import (
     CustomLoginForm,
@@ -24,7 +24,8 @@ from selenium.webdriver.common.by import By
 import openai
 
 from .models import Post, UserProfile, Realty
-from django.db.models import Q
+from django.db.models import Q, F, IntegerField, ExpressionWrapper
+from django.db.models.functions import Extract
 
 # Create your views here.
 import requests, json, base64, time
@@ -402,7 +403,8 @@ def stores(request):
     top_views_stores = Store.objects.all()
     return render(request, "stores/stores.html", {"stores": top_views_stores})
 
-def stores_post(request,pk):
+
+def stores_post(request, pk):
     store = get_object_or_404(Store, pk=pk)
 
     if request.user.is_authenticated:
@@ -423,6 +425,7 @@ def stores_post(request,pk):
 
     return render(request, "stores/stores_post.html", context)
 
+
 def stores_write(request):
     try:
         user_profile = UserProfile.objects.get(user=request.user)
@@ -434,7 +437,8 @@ def stores_write(request):
     except UserProfile.DoesNotExist:
         return redirect("alert", alert_message="동네인증이 필요합니다.")
     except:
-        return redirect("login_alert")    
+        return redirect("login_alert")
+
 
 @login_required
 def create_stores(request):
@@ -447,7 +451,8 @@ def create_stores(request):
             return redirect("stores_post", pk=store.pk)
     else:
         form = StoreForm()
-    return render(request, "stores/stores_post.html", {"form": form})   
+    return render(request, "stores/stores_post.html", {"form": form})
+
 
 def set_region(request):
     if request.method == "POST":
@@ -544,7 +549,27 @@ def execute_chatbot(request):
 
 
 def realty(request):
-    top_views_realty = Realty.objects.filter(product_sold="N").order_by("-view_num")
+    # 게시물을 조회수와 작성일자에 따라 정렬합니다.
+    top_views_realty = (
+        Realty.objects.filter(product_sold="N")
+        .annotate(
+            view_rank=ExpressionWrapper(-F("view_num"), output_field=IntegerField()),
+            creation_year=Extract("created_at", "year"),
+            creation_month=Extract("created_at", "month"),
+            creation_day=Extract("created_at", "day"),
+            creation_hour=Extract("created_at", "hour"),
+            creation_minute=Extract("created_at", "minute"),
+        )
+        .order_by(
+            "view_rank",
+            "-creation_year",
+            "-creation_month",
+            "-creation_day",
+            "-creation_hour",
+            "-creation_minute",
+        )
+    )
+
     return render(request, "realty/realty.html", {"realty": top_views_realty})
 
 
