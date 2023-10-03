@@ -1,5 +1,6 @@
 from django import forms
-from .models import Post, Oldcar, Job, Realty
+from .models import Post, Oldcar, Job, Realty, MenuItem, Store
+
 
 
 class CustomLoginForm(forms.Form):
@@ -55,6 +56,14 @@ class OldcarForm(forms.ModelForm):
         ]
 
 
+
+class StoreForm(forms.ModelForm):
+    class Meta:
+        model = Store
+        fields = ['store_name', 'location', 'semi_location',
+                   'greetings', 'category', 'days', 
+                  'open_time', 'close_time','images', 'menu_items']
+        
 class JobsForm(forms.ModelForm):
     class Meta:
         model = Job
