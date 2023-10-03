@@ -1,17 +1,8 @@
 from django.http import JsonResponse
 from django.contrib import messages
-from .models import Post, UserProfile, Oldcar, Store
-from .forms import CustomLoginForm, CustomRegistrationForm, PostForm, OldcarForm, StoreForm
-from .models import Post, UserProfile, Oldcar, Chat, ChatRoom, Job
-from .forms import (
-    CustomLoginForm,
-    CustomRegistrationForm,
-    PostForm,
-    OldcarForm,
-    JobsForm,
-    RealtyForm,
-)
 
+from .forms import CustomLoginForm, CustomRegistrationForm, PostForm, OldcarForm, StoreForm, JobsForm, RealtyForm
+from .models import Post, UserProfile, Oldcar, Chat, ChatRoom, Job, Store, Realty
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -23,9 +14,9 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 import openai
 
-from .models import Post, UserProfile, Realty
 from django.db.models import Q, F, IntegerField, ExpressionWrapper
 from django.db.models.functions import Extract
+
 
 # Create your views here.
 import requests, json, base64, time
@@ -240,12 +231,12 @@ def edit(request, id):
 
 def delete(request, id):
     try:
-        post = Post.objects.get(id=id)
+        post = Oldcar.objects.get(id=id)
         post.delete()
         messages.success(request, "삭제되었습니다.")
     except Post.DoesNotExist:
         messages.error(request, "포스팅을 찾을 수 없습니다.")
-    return redirect("trade")
+    return redirect("oldcar")
 
 
 @login_required
@@ -347,7 +338,7 @@ def jobs(request):
 
 def oldcar(request):
     top_views_posts = Oldcar.objects.filter(product_sold="N").order_by("-view_num")
-    return render(request, "oldcar/oldcar.html", {"odlcars": top_views_posts})
+    return render(request, "oldcar/oldcar.html", {"oldcars": top_views_posts})
 
 
 def oldcar_post(request, pk):
@@ -399,6 +390,7 @@ def create_oldcar(request):
     return render(request, "oldcar/oldcar_post.html", {"form": form})
 
 
+
 def stores(request):
     top_views_stores = Store.objects.all()
     return render(request, "stores/stores.html", {"stores": top_views_stores})
@@ -407,23 +399,34 @@ def stores(request):
 def stores_post(request, pk):
     store = get_object_or_404(Store, pk=pk)
 
-    if request.user.is_authenticated:
-        if request.user != store.user:
-            store.save()
-    else:
-        store.save()
+def oldcar_edit(request, id):
+    oldcar = get_object_or_404(Oldcar, id=id)
+    if oldcar:
+        oldcar.description = oldcar.description.strip()
+    if request.method == "POST":
+        oldcar.title = request.POST["title"]
+        oldcar.price = request.POST["price"]
+        oldcar.description = request.POST["description"]
+        oldcar.car_info = request.POST["car_info"]
+        oldcar.insurance_history = request.POST["insurance_history"]
+        oldcar.location = request.POST["location"]
+        if "images" in request.FILES:
+            oldcar.images = request.FILES["images"]
+        oldcar.save()
+        return redirect("oldcar_post", pk=id)
+    return render(request, "oldcar/write.html", {"post": oldcar})
 
+
+
+def oldcar_delete(request, id):
     try:
-        user_profile = UserProfile.objects.get(user=store.user)
-    except UserProfile.DoesNotExist:
-        user_profile = None
+        oldcar = Oldcar.objects.get(id=id)
+        oldcar.delete()
+        messages.success(request, "삭제되었습니다.")
+    except Oldcar.DoesNotExist:
+        messages.error(request, "포스팅을 찾을 수 없습니다.")
+    return redirect("oldcar")
 
-    context = {
-        "store": store,
-        "user_profile": user_profile,
-    }
-
-    return render(request, "stores/stores_post.html", context)
 
 
 def stores_write(request):
@@ -440,6 +443,10 @@ def stores_write(request):
         return redirect("login_alert")
 
 
+def stores(request):
+    return render(request, "stores/stores.html")
+
+
 @login_required
 def create_stores(request):
     if request.method == "POST":
@@ -449,6 +456,8 @@ def create_stores(request):
             store.user = request.user
             store.save()
             return redirect("stores_post", pk=store.pk)
+        else:
+            print(form.errors)
     else:
         form = StoreForm()
     return render(request, "stores/stores_post.html", {"form": form})
@@ -479,6 +488,11 @@ def set_region_certification(request):
         request.user.profile.save()
         messages.success(request, "인증되었습니다")
         return redirect("location")
+
+
+def realty(request):
+    top_views_posts = Post.objects.filter(product_sold="N").order_by("-view_num")
+    return render(request, "realty/realty.html", {"posts": top_views_posts})
 
 
 openai.api_key = secret["AI_API_KEY"]
@@ -548,6 +562,7 @@ def execute_chatbot(request):
         return JsonResponse({"response": response})
 
 
+
 def realty(request):
     # 게시물을 조회수와 작성일자에 따라 정렬합니다.
     top_views_realty = (
@@ -573,87 +588,29 @@ def realty(request):
     return render(request, "realty/realty.html", {"realty": top_views_realty})
 
 
+
 def realty_post(request, pk):
-    realty = get_object_or_404(Realty, pk=pk)
+    post = get_object_or_404(Realty, pk=pk)
 
     if request.user.is_authenticated:
-        if request.user != realty.user:
-            realty.view_num += 1
-            realty.save()
+        if request.user != post.user:
+            post.view_num += 1
+            post.save()
     else:
-        realty.view_num += 1
-        realty.save()
+        post.view_num += 1
+        post.save()
 
     try:
-        user_profile = UserProfile.objects.get(user=realty.user)
+        user_profile = UserProfile.objects.get(user=post.user)
     except UserProfile.DoesNotExist:
         user_profile = None
 
     context = {
-        "realty": realty,
+        "post": post,
         "user_profile": user_profile,
     }
 
     return render(request, "realty/realty_post.html", context)
-
-
-def realty_write(request):
-    try:
-        user_profile = UserProfile.objects.get(user=request.user)
-
-        if user_profile.region_certification == "Y":
-            return render(request, "realty/realty_write.html")
-        else:
-            return redirect("alert", alert_message="동네인증이 필요합니다.")
-    except UserProfile.DoesNotExist:
-        return redirect("alert", alert_message="동네인증이 필요합니다.")
-    except:
-        return redirect("login_alert")
-
-
-@login_required
-def create_realty(request):
-    if request.method == "POST":
-        form = RealtyForm(request.POST, request.FILES)
-        if form.is_valid():
-            realty = form.save(commit=False)
-            realty.user = request.user
-            realty.save()
-            return redirect("realty_post", pk=realty.pk)
-        else:
-            form = RealtyForm()
-    return render(request, "realty/realty_post.html", {"form": form})
-
-
-def delete_realty(request, id):
-    try:
-        realty = Realty.objects.get(id=id)
-        realty.delete()
-        messages.success(request, "삭제되었습니다.")
-    except Realty.DoesNotExist:
-        messages.error(request, "포스팅을 찾을 수 없습니다.")
-    return redirect("realty")
-
-
-def edit_realty(request, id):
-    realty = get_object_or_404(Realty, id=id)
-    if realty:
-        realty.description = realty.description.strip()
-    if request.method == "POST":
-        realty.title = request.POST["title"]
-        realty.property_type = request.POST["property_type"]
-        realty.deposit = request.POST["deposit"]
-        realty.monthly_rent = request.POST["monthly_rent"]
-        realty.area = request.POST["area"]
-        realty.rooms = request.POST["rooms"]
-        realty.floor = request.POST["floor"]
-        realty.description = request.POST["description"]
-        realty.location = request.POST["location"]
-        if "images" in request.FILES:
-            realty.images = request.FILES["images"]
-        realty.save()
-        return redirect("realty_post", pk=id)
-    return render(request, "realty/realty_write.html", {"realty": realty})
 
 
 def jobs_write(request):
@@ -680,7 +637,9 @@ def create_job(request):
             jobs.save()
             return redirect("jobs_post", pk=jobs.pk)
         else:
-            form = JobsForm()
+            print(form.errors)
+    else:
+        form = JobsForm()
     return render(request, "jobs/jobs_post.html", {"form": form})
 
 
