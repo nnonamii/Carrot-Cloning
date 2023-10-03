@@ -10,8 +10,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 
-# from selenium import webdriver
-# from selenium.webdriver.common.by import By
+from selenium import webdriver
+from selenium.webdriver.common.by import By
 import openai
 
 from django.db.models import Q, F, IntegerField, ExpressionWrapper
@@ -396,8 +396,26 @@ def stores(request):
     return render(request, "stores/stores.html", {"stores": top_views_stores})
 
 
-def stores_post(request, pk):
+def stores_post(request,pk):
     store = get_object_or_404(Store, pk=pk)
+
+    if request.user.is_authenticated:
+        if request.user != store.user:
+            store.save()
+    else:
+        store.save()
+
+    try:
+        user_profile = UserProfile.objects.get(user=store.user)
+    except UserProfile.DoesNotExist:
+        user_profile = None
+
+    context = {
+        "store": store,
+        "user_profile": user_profile,
+    }
+
+    return render(request, "stores/stores_post.html", context)
 
 def oldcar_edit(request, id):
     oldcar = get_object_or_404(Oldcar, id=id)
@@ -520,14 +538,66 @@ def set_region_certification(request):
         return redirect("location")
 
 
-def realty(request):
-    top_views_posts = Post.objects.filter(product_sold="N").order_by("-view_num")
-    return render(request, "realty/realty.html", {"posts": top_views_posts})
-
 
 openai.api_key = secret["AI_API_KEY"]
 
+def realty_write(request):
+    try:
+        user_profile = UserProfile.objects.get(user=request.user)
 
+        if user_profile.region_certification == "Y":
+            return render(request, "realty/realty_write.html")
+        else:
+            return redirect("alert", alert_message="동네인증이 필요합니다.")
+    except UserProfile.DoesNotExist:
+        return redirect("alert", alert_message="동네인증이 필요합니다.")
+    except:
+        return redirect("login_alert")
+
+
+@login_required
+def create_realty(request):
+    if request.method == "POST":
+        form = RealtyForm(request.POST, request.FILES)
+        if form.is_valid():
+            realty = form.save(commit=False)
+            realty.user = request.user
+            realty.save()
+            return redirect("realty_post", pk=realty.pk)
+        else:
+            form = RealtyForm()
+    return render(request, "realty/realty_post.html", {"form": form})
+
+
+def delete_realty(request, id):
+    try:
+        realty = Realty.objects.get(id=id)
+        realty.delete()
+        messages.success(request, "삭제되었습니다.")
+    except Realty.DoesNotExist:
+        messages.error(request, "포스팅을 찾을 수 없습니다.")
+    return redirect("realty")
+
+
+def edit_realty(request, id):
+    realty = get_object_or_404(Realty, id=id)
+    if realty:
+        realty.description = realty.description.strip()
+    if request.method == "POST":
+        realty.title = request.POST["title"]
+        realty.property_type = request.POST["property_type"]
+        realty.deposit = request.POST["deposit"]
+        realty.monthly_rent = request.POST["monthly_rent"]
+        realty.area = request.POST["area"]
+        realty.rooms = request.POST["rooms"]
+        realty.floor = request.POST["floor"]
+        realty.description = request.POST["description"]
+        realty.location = request.POST["location"]
+        if "images" in request.FILES:
+            realty.images = request.FILES["images"]
+        realty.save()
+        return redirect("realty_post", pk=id)
+    return render(request, "realty/realty_write.html", {"realty": realty})
 def chatbot(request):
     try:
         login_user = request.user
@@ -620,23 +690,23 @@ def realty(request):
 
 
 def realty_post(request, pk):
-    post = get_object_or_404(Realty, pk=pk)
+    realty = get_object_or_404(Realty, pk=pk)
 
     if request.user.is_authenticated:
-        if request.user != post.user:
-            post.view_num += 1
-            post.save()
+        if request.user != realty.user:
+            realty.view_num += 1
+            realty.save()
     else:
-        post.view_num += 1
-        post.save()
+        realty.view_num += 1
+        realty.save()
 
     try:
-        user_profile = UserProfile.objects.get(user=post.user)
+        user_profile = UserProfile.objects.get(user=realty.user)
     except UserProfile.DoesNotExist:
         user_profile = None
 
     context = {
-        "post": post,
+        "realty": realty,
         "user_profile": user_profile,
     }
 
