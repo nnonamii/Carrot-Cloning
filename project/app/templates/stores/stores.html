@@ -1,16 +1,17 @@
-{% comment %} {% load custom_filter%} {% endcomment %}
+{% load custom_filter%}
 {% load static %}{% load humanize %}
 <!DOCTYPE html>
 <html>
 
-  <head>
-    <title>동네가게</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/global.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/stores.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/nav.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/footer.css' %}"/>
-  </head>
+<head>
+  <title>동네가게</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/global.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/stores.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/nav.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/footer.css' %}" />
+  <link rel="shortcut icon" href="{% static 'img/icon.png' %}?{% now 'U' %}" />
+</head>
 
   <body>
     {% include 'nav.html' %}
@@ -20,31 +21,39 @@
           가게 소개하기
         </div>
       </a>
-      <div class="about-trade">
+      <div class="about-stores">
         <div class="container ">
-          <div class="trade-text">
+          <div class="stores-text">
             <h3>동네 이웃들이</br>자주 가는 동네가게</h3>
           <p>우리 동네 사람들이</br>이용하는 가게를 찾아보세요.</p>
       </div>
-      <div class="thumbnail-img">
-        <img src="{% static 'img/stores.png' %}" alt=""/>
+    </a>
+    <div class="about-trade">
+      <div class="container ">
+        <div class="trade-text">
+          <h3>동네 이웃들이</br>자주 가는 동네가게</h3>
+          <p>우리 동네 사람들이</br>이용하는 가게를 찾아보세요.</p>
+        </div>
+        <div class="thumbnail-img">
+          <img src="{% static 'img/stores.png' %}" alt="" />
+        </div>
       </div>
     </div>
-  </div>
+
 
   <div class="post-box">
     <div class="container column center">
       <h1>다양한 동네가게를 볼 수 있어요</h1>
     </div>
     <div class="container column center">
-      <div class="full-box trade-box column">
+      <div class="full-box stores-box column">
         <div class="flex-box full-box card-container between">
           {% for store in stores %}
             <div class="card-box">
               <a href="{% url 'stores_post' store.pk %}" class="stores-text-link">
                 <div class="card-img">
                   {% if store.images %}
-                    <img src="{{ store.images.url }}" alt="{{ store.store_name }}">
+                  <img src="{{ store.images.url }}" alt="{{ store.store_name }}">
                   {% endif %}
                 </div>
                 <div class="card-info-box">
@@ -52,24 +61,21 @@
                     <h3>{{store.store_name}}</h3>
                     <p>{{store.semi_location}}</p>
                   </div>
-                  <p>{{store.greetings}}</p>
+                  <p class="greetings-box">{{store.greetings}}</p>
                   <div class="flex-box">
-                    <p>후기 1111</p>
-                    <p>&nbsp;·&nbsp;</p>
-                    <p>단골 {{store.connexion}}</p>
-                    <p>&nbsp;·&nbsp;</p>
-                    <p>{{store.category}}</p>
+                    <p class = "information-box">단골 {{store.connexion}}</p>
+                    <p class = "information-box">&nbsp;·&nbsp;</p>
+                    <p class = "information-box">{{store.category}}</p>
                   </div>
                 </div>
               </a>
             </div>
-          {% endfor %}
 
+          {% endfor %}
         </div>
       </div>
     </div>
-  </div>
-  {% include 'footer.html' %}
+    {% include 'footer.html' %}
 
 </body>
 

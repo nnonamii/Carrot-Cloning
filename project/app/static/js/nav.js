@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  if ( window.location.pathname.includes("jobs")) {
+  if (window.location.pathname.includes("jobs")) {
     document.getElementById("jobs-button").classList.toggle("orange-text");
   }
   else if (
@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("realty-button").classList.toggle("orange-text");
   } else if (window.location.pathname == "/oldcar/") {
     document.getElementById("oldcar-button").classList.toggle("orange-text");
-
+  } else if (window.location.pathname == "/stores/") {
+    document.getElementById("stores-button").classList.toggle("orange-text");
   }
 });

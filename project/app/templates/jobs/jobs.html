@@ -3,49 +3,50 @@
 <!DOCTYPE html>
 <html>
 
-  <head>
-    <title>중고거래</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}?{% now "U" %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/global.css' %}?{% now "U" %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/trade.css' %}?{% now "U" %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/nav.css' %}?{% now "U" %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/footer.css' %}?{% now "U" %}"/>
-  </head>
+<head>
+  <title>알바</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}?{% now " U" %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/global.css' %}?{% now " U" %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/trade.css' %}?{% now " U" %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/nav.css' %}?{% now " U" %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/footer.css' %}?{% now " U" %}" />
+  <link rel="shortcut icon" href="{% static 'img/icon.png' %}?{% now 'U' %}" />
+</head>
 
-  <body>
-    {% include 'nav.html' %}
-    <div class="content-box">
-      <a href="{% url 'jobs_write' %}">
-        <div class="floating-button">
-          거래글쓰기
-        </div>
-      </a>
-      <div class="about-trade">
-        <div class="container ">
-          <div class="trade-text">
-            <h3>우리 동네에서 찾는</br>당근알바</h3>
+<body>
+  {% include 'nav.html' %}
+  <div class="content-box">
+    <a href="{% url 'jobs_write' %}">
+      <div class="floating-button">
+        거래글쓰기
+      </div>
+    </a>
+    <div class="about-trade">
+      <div class="container ">
+        <div class="trade-text">
+          <h3>우리 동네에서 찾는</br>당근알바</h3>
           <p>걸어서 10분 거리의</br>동네 알바들 여기 다 있어요.</p>
-      </div>
-      <div class="thumbnail-img">
-        <img src="{% static 'img/jobs.png' %}" alt=""/>
+        </div>
+        <div class="thumbnail-img">
+          <img src="{% static 'img/jobs.png' %}" alt="" />
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="post-box">
-    <div class="container column center">
-      <h1>인기 당근알바</h1>
-    </div>
-    <div class="container column center">
-      <div class="full-box trade-box column">
-        <div class="flex-box full-box card-container between">
-          {% for job in jobs %}
+    <div class="post-box">
+      <div class="container column center">
+        <h1>인기 당근알바</h1>
+      </div>
+      <div class="container column center">
+        <div class="full-box trade-box column">
+          <div class="flex-box full-box card-container between">
+            {% for job in jobs %}
 
             <div class="card-box">
               <a href="{% url 'jobs_post' job.pk %}" class="trade-text-link">
                 <div class="card-img">
                   {% if job.images %}
-                    <img src="{{ job.images.url }}" alt="title">
+                  <img src="{{ job.images.url }}" alt="title">
                   {% endif %}
                 </div>
                 <div class="card-info-box">
@@ -62,13 +63,13 @@
                 </div>
               </a>
             </div>
-          {% endfor %}
+            {% endfor %}
 
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  {% include 'footer.html' %}
+    {% include 'footer.html' %}
 
 </body>
 

@@ -24,7 +24,7 @@ import openai
 
 from django.db.models import Q, F, IntegerField, ExpressionWrapper
 from django.db.models.functions import Extract
-
+from django.utils import timezone
 
 # Create your views here.
 import requests, json, base64, time
@@ -125,7 +125,25 @@ def login_alert(request):
 
 
 def trade(request):
-    top_views_posts = Post.objects.filter(product_sold="N").order_by("-view_num")
+    top_views_posts = (
+        Post.objects.filter(product_sold="N")
+        .annotate(
+            view_rank=ExpressionWrapper(-F("view_num"), output_field=IntegerField()),
+            creation_year=Extract("created_at", "year"),
+            creation_month=Extract("created_at", "month"),
+            creation_day=Extract("created_at", "day"),
+            creation_hour=Extract("created_at", "hour"),
+            creation_minute=Extract("created_at", "minute"),
+        )
+        .order_by(
+            "view_rank",
+            "-creation_year",
+            "-creation_month",
+            "-creation_day",
+            "-creation_hour",
+            "-creation_minute",
+        )
+    )
     return render(request, "trade/trade.html", {"posts": top_views_posts})
 
 
@@ -151,6 +169,18 @@ def trade_post(request, pk):
     }
 
     return render(request, "trade/trade_post.html", context)
+
+
+def bump_trade(request, pk):
+    # 게시물 조회
+    post = get_object_or_404(Post, pk=pk)
+
+    # 게시물의 created_at 필드를 현재 일시로 업데이트
+    post.created_at = timezone.now()
+    post.save()
+
+    # 업데이트 후, 해당 게시물의 상세 페이지로 리디렉션
+    return redirect("trade_post", pk=pk)
 
 
 def custom_login(request):
@@ -239,12 +269,12 @@ def edit(request, id):
 
 def delete(request, id):
     try:
-        post = Oldcar.objects.get(id=id)
+        post = Post.objects.get(id=id)
         post.delete()
         messages.success(request, "삭제되었습니다.")
     except Post.DoesNotExist:
         messages.error(request, "포스팅을 찾을 수 없습니다.")
-    return redirect("oldcar")
+    return redirect("trade")
 
 
 @login_required
@@ -422,7 +452,7 @@ def create_oldcar(request):
 
 
 def stores(request):
-    top_views_stores = Store.objects.all()
+    top_views_stores = Store.objects.order_by("-connexion")
     return render(request, "stores/stores.html", {"stores": top_views_stores})
 
 
@@ -465,7 +495,6 @@ def oldcar_edit(request, id):
         return redirect("oldcar_post", pk=id)
     return render(request, "oldcar/oldcar_write.html", {"oldcar": oldcar})
 
-
 def oldcar_delete(request, id):
     try:
         oldcar = Oldcar.objects.get(id=id)
@@ -474,6 +503,19 @@ def oldcar_delete(request, id):
     except Oldcar.DoesNotExist:
         messages.error(request, "포스팅을 찾을 수 없습니다.")
     return redirect("oldcar")
+
+
+
+def bump_oldcar(request, pk):
+    # 게시물 조회
+    oldcar = get_object_or_404(Oldcar, pk=pk)
+
+    # 게시물의 created_at 필드를 현재 일시로 업데이트
+    oldcar.created_at = timezone.now()
+    oldcar.save()
+
+    # 업데이트 후, 해당 게시물의 상세 페이지로 리디렉션
+    return redirect("oldcar_post", pk=pk)
 
 
 def stores_write(request):
@@ -488,10 +530,6 @@ def stores_write(request):
         return redirect("alert", alert_message="동네인증이 필요합니다.")
     except:
         return redirect("login_alert")
-
-
-def stores(request):
-    return render(request, "stores/stores.html")
 
 
 @login_required
@@ -541,6 +579,39 @@ def stores_delete(request, id):
         messages.error(request, "포스팅을 찾을 수 없습니다.")
     return redirect("stores")
 
+
+def bump_stores(request, pk):
+    # 게시물 조회
+    stores = get_object_or_404(Store, pk=pk)
+
+    # 게시물의 created_at 필드를 현재 일시로 업데이트
+    stores.created_at = timezone.now()
+    stores.save()
+
+    # 업데이트 후, 해당 게시물의 상세 페이지로 리디렉션
+    return redirect("stores_post", pk=pk)
+  
+def make_connexion_store(request, pk):
+    store = get_object_or_404(Store, pk=pk)
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+    
+    if store not in user_profile.favorite_stores.all():
+        store.connexion += 1
+        store.save()
+        user_profile.favorite_stores.add(store)
+    
+    return redirect('stores_post', pk=pk)  # 가게 상세 페이지로 리다이렉트
+
+def remove_connexion_store(request, pk):
+    store = get_object_or_404(Store, pk=pk)
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+    
+    if store in user_profile.favorite_stores.all():
+        store.connexion -= 1
+        store.save()
+        user_profile.favorite_stores.remove(store)
+    
+    return redirect('stores_post', pk=pk)  # 가게 상세 페이지로 리다이렉트
 
 def set_region(request):
     if request.method == "POST":
@@ -629,6 +700,18 @@ def edit_realty(request, id):
         realty.save()
         return redirect("realty_post", pk=id)
     return render(request, "realty/realty_write.html", {"realty": realty})
+
+
+def bump_realty(request, pk):
+    # 게시물 조회
+    realty = get_object_or_404(Realty, pk=pk)
+
+    # 게시물의 created_at 필드를 현재 일시로 업데이트
+    realty.created_at = timezone.now()
+    realty.save()
+
+    # 업데이트 후, 해당 게시물의 상세 페이지로 리디렉션
+    return redirect("realty_post", pk=pk)
 
 
 def chatbot(request):
@@ -824,6 +907,18 @@ def edit_jobs(request, id):
         jobs.save()
         return redirect("jobs_post", pk=id)
     return render(request, "jobs/jobs_write.html", {"jobs": jobs})
+
+
+def bump_jobs(request, pk):
+    # 게시물 조회
+    jobs = get_object_or_404(Job, pk=pk)
+
+    # 게시물의 created_at 필드를 현재 일시로 업데이트
+    jobs.created_at = timezone.now()
+    jobs.save()
+
+    # 업데이트 후, 해당 게시물의 상세 페이지로 리디렉션
+    return redirect("jobs_post", pk=pk)
 
 
 def coupang(request):
