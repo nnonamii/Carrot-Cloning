@@ -3,84 +3,89 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}?{% now "U" %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/global.css' %}?{% now "U" %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/trade_post.css' %}?{% now "U" %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/nav.css' %}?{% now "U" %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/footer.css' %}?{% now "U" %}"/>
-    <title>중고차 직거래 상세보기</title>
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}?{% now " U" %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/global.css' %}?{% now " U" %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/trade_post.css' %}?{% now " U" %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/nav.css' %}?{% now " U" %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/footer.css' %}?{% now " U" %}" />
+  <link rel="shortcut icon" href="{% static 'img/icon.png' %}?{% now 'U' %}" />
+  <title>중고차거래 상세보기</title>
+</head>
 
-  <body>
-    {% include 'nav.html' %}
-    <div class="content-box">
-      <div class="container column">
-        <div class="post-box">
-          {% block content %}
-          {% comment %} {% if post.images %} {% endcomment %}
-            <img src="{{ oldcar.images.url }}" alt="{{ oldcar.title }}" class="block-box">
-          {% comment %} {% endif %} {% endcomment %}
-            <div class="flex-box between info-button-box">
-              <div class="user-info">
-                <h6>{{ oldcar.user }}</h6>
-                <p>{{ user_profile.region }}</p>
-              </div>
-              {% if request.user.username == oldcar.user.username %}
-                <div class="flex-box button-box">
-                  <a href="{% url 'oldcar_edit' oldcar.id %}">
-                    <button class="grey">수정하기</button>
-                  </a>
-                  <a >
-                    <button class="grey" onclick="oldcar_delete_post()">삭제하기</button>
-                  </a>
-                  <button class="orange">채팅보기</button>
-                </div>
-              {% else %}
-                <div class="button-box">
-                  <a href="{% url 'chat' oldcar.user oldcar.id%}">
-                    <button class="orange">채팅하기</button>
-                  </a>
-                </div>
-              {% endif %}
-            </div>
-            <hr class="line">
-            <div class="post-info-box">
-              <div class="flex-box between">
-                <h3>{{ oldcar.title }}</h3>
-                <h3>{{ oldcar.price |intcomma}}원</h3>
-              </div>
-              <p>중고차 설명 | {{ oldcar.description }}</p>
-              <p>차량 정보 | {{ oldcar.car_info }}</p>
-              <p>보험 이력 | {{ oldcar.insurance_history }}</p>
-              <div class="location-views-box flex-box between">
-                <p>희망 거래장소 |
-                  {{ oldcar.location }}</p>
-                <p>조회수
-                  {{ oldcar.view_num }}</p>
-              </div>
-            </div>
-          {% endblock %}
+<body>
+  {% include 'nav.html' %}
+  <div class="content-box">
+    <div class="container column">
+      <div class="post-box">
+        {% block content %}
+        {% comment %} {% if post.images %} {% endcomment %}
+        <img src="{{ oldcar.images.url }}" alt="{{ oldcar.title }}" class="block-box">
+        {% comment %} {% endif %} {% endcomment %}
+        <div class="flex-box between info-button-box">
+          <div class="user-info">
+            <h6>{{ oldcar.user }}</h6>
+            <p>{{ user_profile.region }}</p>
+          </div>
+          {% if request.user.username == oldcar.user.username %}
+          <div class="flex-box button-box">
+            <a href="{% url 'oldcar_edit' oldcar.id %}">
+              <button class="grey">수정하기</button>
+            </a>
+            <a>
+              <button class="grey" onclick="oldcar_delete_post()">삭제하기</button>
+            </a>
+            <button class="orange">채팅보기</button>
+            <a href="{% url 'bump_oldcar' oldcar.pk %}">
+              <button class="orange">끌어올리기</button>
+            </a>
+          </div>
+          {% else %}
+          <div class="button-box">
+            <a href="{% url 'chat' oldcar.user oldcar.id%}">
+              <button class="orange">채팅하기</button>
+            </a>
+          </div>
+          {% endif %}
+
         </div>
+        <hr class="line">
+        <div class="post-info-box">
+          <div class="flex-box between">
+            <h3>{{ oldcar.title }}</h3>
+            <h3>{{ oldcar.price |intcomma}}원</h3>
+          </div>
+          <p>{{ oldcar.car_info }}</p>
+          <p>{{ oldcar.insurance_history }}</p>
+          <p>{{ oldcar.description }}</p>
+          <div class="location-views-box flex-box between">
+            <p>희망 거래장소 |
+              {{ oldcar.location }}</p>
+            <p>조회수
+              {{ oldcar.view_num }}</p>
+          </div>
+        </div>
+        {% endblock %}
       </div>
     </div>
-    {% include 'footer.html' %}
-    
-    <script>
-      function oldcar_delete_post() {
-        var userConfirmed = confirm("삭제하시겠습니까?");
-        
-        if (userConfirmed) {
-          // 사용자가 확인을 눌렀을 때의 동작
-          location.href = "{% url 'oldcar_delete' oldcar.id %}";
-        } else {
-          // 사용자가 확인 대화 상자에서 취소를 눌렀을 때의 동작 (아무 동작 없음)
-        }
+  </div>
+  {% include 'footer.html' %}
+
+  <script>
+    function oldcar_delete_post() {
+      var userConfirmed = confirm("삭제하시겠습니까?");
+
+      if (userConfirmed) {
+        // 사용자가 확인을 눌렀을 때의 동작
+        location.href = "{% url 'oldcar_delete' oldcar.id %}";
+      } else {
+        // 사용자가 확인 대화 상자에서 취소를 눌렀을 때의 동작 (아무 동작 없음)
       }
-      
-    </script>
-  </body>
+    }
+
+  </script>
+</body>
 
 </html>

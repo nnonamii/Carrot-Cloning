@@ -6,12 +6,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}?{% now "U" %}" />
-  <link rel="stylesheet" type="text/css" href="{% static 'css/global.css' %}?{% now "U" %}" />
-  <link rel="stylesheet" type="text/css" href="{% static 'css/trade_post.css' %}?{% now "U" %}" />
-  <link rel="stylesheet" type="text/css" href="{% static 'css/nav.css' %}?{% now "U" %}" />
-  <link rel="stylesheet" type="text/css" href="{% static 'css/footer.css' %}?{% now "U" %}" />
-  <title>중고거래 상세보기</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}?{% now " U" %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/global.css' %}?{% now " U" %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/trade_post.css' %}?{% now " U" %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/nav.css' %}?{% now " U" %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/footer.css' %}?{% now " U" %}" />
+  <link rel="shortcut icon" href="{% static 'img/icon.png' %}?{% now 'U' %}" />
+  <title>알바 상세보기</title>
 </head>
 
 <body>
@@ -33,10 +34,13 @@
             <a href="{% url 'edit_jobs' jobs.id %}">
               <button class="grey">수정하기</button>
             </a>
-            <a >
+            <a>
               <button class="grey" onclick="delete_jobs()">삭제하기</button>
             </a>
             <button class="orange">채팅보기</button>
+            <a href="{% url 'bump_jobs' jobs.pk %}">
+              <button class="orange">끌어올리기</button>
+            </a>
           </div>
           {% else %}
           <div class="button-box">
@@ -72,7 +76,7 @@
   <script>
     function delete_jobs() {
       var userConfirmed = confirm("삭제하시겠습니까?");
-      
+
       if (userConfirmed) {
         // 사용자가 확인을 눌렀을 때의 동작
         location.href = "{% url 'delete_jobs' jobs.id %}";
@@ -80,7 +84,7 @@
         // 사용자가 확인 대화 상자에서 취소를 눌렀을 때의 동작 (아무 동작 없음)
       }
     }
-    
+
   </script>
 
 </body>

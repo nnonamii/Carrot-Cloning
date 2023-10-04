@@ -3,20 +3,20 @@
 <!DOCTYPE html>
 <html>
 
-  <head>
-    <title>소개글 글쓰기</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/global.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/write.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/nav.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/footer.css' %}"/>
-  </head>
+<head>
+  <title>소개글 글쓰기</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/global.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/write.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/nav.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/footer.css' %}" />
+  <link rel="shortcut icon" href="{% static 'img/icon.png' %}?{% now 'U' %}" />
+</head>
 
-  <body>
-    {% include 'nav.html' %}
-    <div class="content-box">
-      <div class="container">
-
+<body>
+  {% include 'nav.html' %}
+  <div class="content-box">
+    <div class="container">
         {% block content %}
           <div class="about-trade">
             <div class="container">
@@ -74,9 +74,10 @@
               </form>
           </div>
         </div>
-        {% endblock %}
-        <script type="text/javascript" src="{% static 'js/write.js' %}"></script>
+      </div>
+      {% endblock %}
+      <script type="text/javascript" src="{% static 'js/write.js' %}"></script>
 
-      </body>
+</body>
 
-    </html>
+</html>
