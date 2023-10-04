@@ -87,16 +87,7 @@ hr{
     margin-top: 40px;
 }
 
-.card-box{
-    flex: 0 0 23%;
-    margin-right: 2rem;
-  }
-  
-  .card-box:hover{
-    opacity: 0.8;
-  }
-  
-  .card-box a{
+.stores-text-link{
     width: 100%;
     background-color: var(--seed-semantic-color-paper-default);
     padding: 1rem;
@@ -137,10 +128,35 @@ hr{
   .card-info-box h2{
     font-size: 24px;
     font-weight: bold;
-  }
-
+  } 
+  
   .title-location-box{
     display: flex;
     align-items: center;
     gap: 10px;
   }
+
+.title-box{
+    margin-bottom: 20px;
+}
+
+.greetings-box{
+    margin-bottom: 20px;
+}
+
+.location-text{
+    display: flex;
+    flex-direction: row;
+    font-size: 30px;
+}
+
+.time-text{
+    display: flex;
+    flex-direction: row;
+    font-size: 30px;
+}
+
+.menu-box{
+    display: flex;
+    flex-direction: column;
+}
