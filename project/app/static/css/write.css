@@ -69,7 +69,7 @@ label{
 
 .flex-box {
   display: flex;
-  flex-direction: row;
+  /* flex-direction: row; */
   /* justify-content: space-between;  */
 }
 
