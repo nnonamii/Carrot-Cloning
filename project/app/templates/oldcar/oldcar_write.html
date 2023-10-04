@@ -38,15 +38,18 @@
               </div>
               <div class="full-box">
                 <label for="description" class="block-box">중고차 설명</label>
-                <textarea name="description" required="required">{% if oldcar %}{{ oldcar.description }}{% endif %}</textarea>
+                <textarea name="description" required="required">
+                  {% if oldcar %}{{ oldcar.description }}{% endif %}</textarea>
               </div>
               <div class="full-box">
                 <label for="car_info" class="block-box">차량 정보</label>
-                <textarea name="car_info" required="required">{% if oldcar %}{{ oldcar.car_info }}{% endif %}</textarea>
+                <textarea name="car_info" required="required">
+                  {% if oldcar %}{{ oldcar.car_info }}{% endif %}</textarea>
               </div>
               <div class="full-box">
                 <label for="insurance_history" class="block-box">보험 이력</label>
-                <textarea name="insurance_history" required="required">{% if oldcar %}{{ oldcar.insurance_history }}{% endif %}</textarea>
+                <textarea name="insurance_history" required="required">
+                  {% if oldcar %}{{ oldcar.insurance_history }}{% endif %}</textarea>
               </div>
               <div class="full-box">
                 <label for="location" class="block-box">거래 희망 장소</label>
