@@ -3,125 +3,127 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}?{% now "U" %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/global.css' %}?{% now "U" %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/test.css' %}?{% now "U" %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/nav.css' %}?{% now "U" %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/footer.css' %}?{% now "U" %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/chat.css' %}?{% now "U" %}"/>
-    <title>채팅하기</title>
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}?{% now " U" %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/global.css' %}?{% now " U" %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/test.css' %}?{% now " U" %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/nav.css' %}?{% now " U" %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/footer.css' %}?{% now " U" %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/chat.css' %}?{% now " U" %}" />
+  <link rel="shortcut icon" href="{% static 'img/icon.png' %}?{% now 'U' %}" />
+  <title>채팅하기</title>
+</head>
 
-  <body class="back-ye">
-    {% include 'nav.html' %}
-    <div class="content-box">
-      <div class="container column">
-        <div class="post-box flex-box">
+<body class="back-ye">
+  {% include 'nav.html' %}
+  <div class="content-box">
+    <div class="container column">
+      <div class="post-box flex-box">
 
-          <!-- 채팅선택창 -->
-          <div class="chat-select-container">
-            <div class="flex-box">
+        <!-- 채팅선택창 -->
+        <div class="chat-select-container">
+          <div class="flex-box">
 
-              <!-- 아이디및 체크박스 -->
-              <div class="id-box flex-box between">
-                <div>
-                  <label>
-                    안읽은 메세지만 보기
-                    <input type="checkbox" name="" id="">
-                  </label>
-                </div>
+            <!-- 아이디및 체크박스 -->
+            <div class="id-box flex-box between">
+              <div>
+                <label>
+                  안읽은 메세지만 보기
+                  <input type="checkbox" name="" id="">
+                </label>
               </div>
-            </div>
-
-            <!-- 채팅 리스트 -->
-            <div class="chat-list-box flex-box column">
-              <!-- 봇 -->
-              <div class="chat-box flex-box" style="background-color:#fa6616;">
-                <div class="ai-profile">
-                  <img src="{% static 'img/icon_aibot.png'%}" alt="">
-                </div>
-                <div>
-                  <p class="bold">AI 챗봇</p>
-                  <p class="chat-thumb-text">궁금한 내용을 물어보세요!</p>
-                </div>
-              </div>
-              <div class="chat-box flex-box" onclick="location.href='{% url 'coupang' %}'">
-                <div class="ai-profile">
-                  <img src="{% static 'img/coupang_logo.png'%}" alt="">
-                </div>
-                <div>
-                  <p class="bold">쿠팡 크롤링봇</p>
-                  <p class="chat-thumb-text">궁금한 내용을 물어보세요!</p>
-                </div>
-              </div>
-              <!-- 채팅방리스트 -->
-              {% for room, p in chat_room_list %}
-                <div class="flex-box chat-box between" onclick="location.href='{% url 'chat' room.user.username p.id %}'">
-                  <div>
-                    <div class="flex-box">
-                      <p class="bold">{{ other_user }}</p>
-                      <p class="s-text">화곡동</p>
-                      <p class="s-text">3주전</p>
-                    </div>
-                    <p class="chat-thumb-text">거래 잘 하셨나요? 거래한 이웃..</p>
-                  </div>
-                  <div class="thumbnail-box">
-                    <img src="{{ p.images.url }}" alt="">
-                  </div>
-                </div>
-              {% endfor %}
             </div>
           </div>
 
-          <!-- 채팅창-->
-          <div class="chat-main-container">
-            <div>
-              <div class="contact-info flex-box">
-                언제나 뜨거운 챗봇
-                <div class="temp">
-                  99.9도
-                </div>
+          <!-- 채팅 리스트 -->
+          <div class="chat-list-box flex-box column">
+            <!-- 봇 -->
+            <div class="chat-box flex-box" style="background-color:#fa6616;">
+              <div class="ai-profile">
+                <img src="{% static 'img/icon_aibot.png'%}" alt="">
               </div>
-              <!--채팅창 메인-->
-              <div class="chat-container"></div>
-            </div>
-
-            <div class="chat-input">
-              <textarea name="chat-message-input" id="chat-message-input" cols="30" rows="10" placeholder="메세지를 입력해주세요"></textarea>
               <div>
-                <button id="chat-message-submit">전송</button>
+                <p class="bold">AI 챗봇</p>
+                <p class="chat-thumb-text">궁금한 내용을 물어보세요!</p>
               </div>
+            </div>
+            <div class="chat-box flex-box" onclick="location.href='{% url 'coupang' %}'">
+              <div class="ai-profile">
+                <img src="{% static 'img/coupang_logo.png'%}" alt="">
+              </div>
+              <div>
+                <p class="bold">쿠팡 크롤링봇</p>
+                <p class="chat-thumb-text">궁금한 내용을 물어보세요!</p>
+              </div>
+            </div>
+            <!-- 채팅방리스트 -->
+            {% for room, p in chat_room_list %}
+            <div class="flex-box chat-box between" onclick="location.href='{% url 'chat' room.user.username p.id %}'">
+              <div>
+                <div class="flex-box">
+                  <p class="bold">{{ other_user }}</p>
+                  <p class="s-text">화곡동</p>
+                  <p class="s-text">3주전</p>
+                </div>
+                <p class="chat-thumb-text">거래 잘 하셨나요? 거래한 이웃..</p>
+              </div>
+              <div class="thumbnail-box">
+                <img src="{{ p.images.url }}" alt="">
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- 채팅창-->
+        <div class="chat-main-container">
+          <div>
+            <div class="contact-info flex-box">
+              언제나 뜨거운 챗봇
+              <div class="temp">
+                99.9도
+              </div>
+            </div>
+            <!--채팅창 메인-->
+            <div class="chat-container"></div>
+          </div>
+
+          <div class="chat-input">
+            <textarea name="chat-message-input" id="chat-message-input" cols="30" rows="10"
+              placeholder="메세지를 입력해주세요"></textarea>
+            <div>
+              <button id="chat-message-submit">전송</button>
+            </div>
             </form>
           </div>
         </div>
       </div>
     </div>
     {% include 'footer.html' %}
-  </body>
+</body>
 <script>
-async function generateResponse(input) {
+  async function generateResponse(input) {
     const response = await fetch('/execute_chatbot/', {
-        method: 'POST',
-        headers: {
+      method: 'POST',
+      headers: {
         'Content-Type': 'application/json',
         'X-CSRFToken': '{{ csrf_token }}',
-        },
-        body: JSON.stringify({ question: input }),
+      },
+      body: JSON.stringify({ question: input }),
     });
-    
+
     const data = await response.json();
     return data;
-    }
-document.querySelector('#chat-message-input').focus();
-document.querySelector('#chat-message-input').onkeyup = function(e) {
+  }
+  document.querySelector('#chat-message-input').focus();
+  document.querySelector('#chat-message-input').onkeyup = function (e) {
     if (e.keyCode === 13) {  // enter, return
-        document.querySelector('#chat-message-submit').click();
+      document.querySelector('#chat-message-submit').click();
     }
-};
-document.querySelector('#chat-message-submit').onclick = function(e) {
+  };
+  document.querySelector('#chat-message-submit').onclick = function (e) {
 
     const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit" });
     const chatLog = document.querySelector('.chat-container');
@@ -131,22 +133,23 @@ document.querySelector('#chat-message-submit').onclick = function(e) {
                   <p class="s-text">${currentTime}</p>
                   <div class="message-text">${message}</div>
                 </div>`;
-                chatLog.scrollTop = chatLog.scrollHeight;
+    chatLog.scrollTop = chatLog.scrollHeight;
     const messageInputDom = document.getElementById('chat-message-input')
     generateResponse(message)
-        .then(response => {
-            chatLog.innerHTML += `
+      .then(response => {
+        chatLog.innerHTML += `
             <div class="message-box from-you">
               <div class="message-text">${response['response']}</div>
               <p class="s-text">${currentTime}</p>
             </div>`;
-            chatLog.scrollTop = chatLog.scrollHeight;
-        })
-        .catch(error => {
+        chatLog.scrollTop = chatLog.scrollHeight;
+      })
+      .catch(error => {
         console.error(error);
-        });
-        
+      });
+
     messageInputDom.value = '';
-};
+  };
 </script>
+
 </html>

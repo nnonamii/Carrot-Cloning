@@ -11,6 +11,7 @@
   <link rel="stylesheet" type="text/css" href="{% static 'css/stores_post.css' %}" />
   <link rel="stylesheet" type="text/css" href="{% static 'css/nav.css' %}" />
   <link rel="stylesheet" type="text/css" href="{% static 'css/footer.css' %}" />
+  <link rel="shortcut icon" href="{% static 'img/icon.png' %}?{% now 'U' %}" />
   <title>동네가게 상세보기</title>
 </head>
 
@@ -71,6 +72,35 @@
               {% endif %}
             </div>
           </div>
+        </div>
+        {% if request.user.username == store.user.username %}
+        <div class="flex-box button-box">
+          <a href="{% url 'stores_edit' store.id %}">
+            <button class="grey">수정하기</button>
+          </a>
+          <a>
+            <button class="grey" onclick="delete_post()">삭제하기</button>
+          </a>
+          <button class="orange">단골 맺기</button>
+          <a href="{% url 'bump_stores' stores.pk %}">
+            <button class="orange">끌어올리기</button>
+          </a>
+        </div>
+        {% else %}
+        <div class="button-box">
+        </div>
+        {% endif %}
+      </div>
+      <hr class="line">
+      <div class="post-info-box">
+        <div class="information-views-box flex-box between">
+          <h1>정보</h1>
+          <h3>{{store.greetings}}</h3>
+        </div>
+        <div class="location-views-box flex-box between">
+          <div class="location-text">
+            <img src="img/location.svg" alt="location" />
+            <p class="detail-location">{{store.location}}</p>
           </div>
         </div>
         <hr class="line">
@@ -98,16 +128,18 @@
             <img src="{{ store.menu_items.url }}" alt="{{ store.store_name }}" class="block-box" style="width: 500px; height: 700px;>
           </div>
         </div>
-        {% endblock %}
       </div>
+      {% endblock %}
     </div>
+  </div>
   </div>
   {% include 'footer.html' %}
 
-  {% comment %} <script>
+  {% comment %}
+  <script>
     function delete_post() {
       var userConfirmed = confirm("삭제하시겠습니까?");
-      
+
       if (userConfirmed) {
         // 사용자가 확인을 눌렀을 때의 동작
         location.href = "{% url 'stores_delete' store.id %}";
@@ -115,9 +147,10 @@
         // 사용자가 확인 대화 상자에서 취소를 눌렀을 때의 동작 (아무 동작 없음)
       }
     }
-    
+
   </script> {% endcomment %}
-  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=06b71a5db40aca812f7ae8bff82d58b9&libraries=services"></script>
+  <script type="text/javascript"
+    src="//dapi.kakao.com/v2/maps/sdk.js?appkey=06b71a5db40aca812f7ae8bff82d58b9&libraries=services"></script>
 
   <script type="text/javascript" src="{% static 'js/store_location.js' %}"></script>
 </body>
