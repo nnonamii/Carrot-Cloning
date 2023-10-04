@@ -8,28 +8,28 @@ body{
 
 
 /* 상단박스 */
-.about-trade {
+.about-stores {
     background-color: #F7F1EB;
     height: 360px;
     color: #000;
     font-family: 'Pretendard', sans-serif;
 }
 
-.about-trade h3{
+.about-stores h3{
     font-size: 51px;
     line-height: 64px;
     font-weight: 700;
     margin: 0 0 24px 0
 }
 
-.about-trade p{
+.about-stores p{
     font-size: 22px;
     font-weight: 400;
     margin-bottom: 10px;
     line-height: normal;
 }
 
-.about-trade .container {
+.about-stores .container {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -37,19 +37,19 @@ body{
     height: 100%;
 }
 
-.about-trade .container .trade-text {
+.about-stores .container .stores-text {
     position: relative;
     color: #000;
     z-index: 1;
     flex: 1; /* 텍스트 영역이 컨테이너의 남은 공간을 채우도록 설정 */
 }
 
-.about-trade .container .thumbnail-img {
+.about-stores .container .thumbnail-img {
     height: -webkit-fill-available;
     flex: 1; /* 이미지 영역이 컨테이너의 남은 공간을 채우도록 설정 */
 }
 
-.about-trade .container .thumbnail-img img {
+.about-stores .container .thumbnail-img img {
     object-fit: cover;
     min-height: -webkit-fill-available;
     width: 100%;
@@ -66,29 +66,29 @@ h1{
   margin: 112px 0 80px;
 }
 
-.trade-info-section{
+.stores-info-section{
   background-color: #f8f9fa;
   height: 1200px;
   padding-bottom: 160px;
 
 }
 
-.trade-section{
+.stores-section{
   flex-direction: column;
   align-items: center;
 }
 
-.trade-box{
+.stores-box{
   align-items: center;
   display: contents;
 }
 
-.trade-box a{
+.stores-box a{
   color: #000;
 }
 
 
-.trade-info-section h1{
+.stores-info-section h1{
   margin: 112px 0 80px 0;
 }
 
@@ -114,7 +114,7 @@ h1{
   padding: 1rem;
   box-sizing: border-box;
   display: flex;
-  align-items: flex-start;
+  align-items:center;
   overflow: hidden;
   text-decoration: none;
   cursor: pointer;
@@ -122,8 +122,8 @@ h1{
 
 .card-img{
   background-color: #292929;
-  height: 100px;
-  width: 100px;
+  height: 200px;
+  width: 200px;
   border-radius: 50%;
   overflow: hidden;
 }
@@ -162,9 +162,9 @@ h1{
     bottom: 40px;
     right: 40px;
     background-color: #ff6f0e; 
-    border-radius: 50%;
-    width: 80px; 
-    height: 80px; 
+    border-radius: 80%;
+    width: 100px; 
+    height: 100px; 
     text-align: center;
     font-weight: 800; 
     text-decoration: none;
@@ -184,5 +184,19 @@ h1{
     cursor: pointer;
   }
 
+  .title-location-box h3{
+    font-size: 24px;
+    font-weight: bold;
+  }
 
-  
+  .title-location-box p{
+    color: #808080;
+  }
+
+  .greetings-box{
+    font-size: 24px;
+  }
+
+  .flex-box .information-box{
+    color: #808080;
+  }
