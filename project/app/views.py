@@ -422,7 +422,7 @@ def create_oldcar(request):
 
 
 def stores(request):
-    top_views_stores = Store.objects.all()
+    top_views_stores = Store.objects.order_by("-connexion")
     return render(request, "stores/stores.html", {"stores": top_views_stores})
 
 
@@ -490,10 +490,6 @@ def stores_write(request):
         return redirect("login_alert")
 
 
-def stores(request):
-    return render(request, "stores/stores.html")
-
-
 @login_required
 def create_stores(request):
     if request.method == "POST":
@@ -541,6 +537,27 @@ def stores_delete(request, id):
         messages.error(request, "포스팅을 찾을 수 없습니다.")
     return redirect("stores")
 
+def make_connexion_store(request, pk):
+    store = get_object_or_404(Store, pk=pk)
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+    
+    if store not in user_profile.favorite_stores.all():
+        store.connexion += 1
+        store.save()
+        user_profile.favorite_stores.add(store)
+    
+    return redirect('stores_post', pk=pk)  # 가게 상세 페이지로 리다이렉트
+
+def remove_connexion_store(request, pk):
+    store = get_object_or_404(Store, pk=pk)
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+    
+    if store in user_profile.favorite_stores.all():
+        store.connexion -= 1
+        store.save()
+        user_profile.favorite_stores.remove(store)
+    
+    return redirect('stores_post', pk=pk)  # 가게 상세 페이지로 리다이렉트
 
 def set_region(request):
     if request.method == "POST":
