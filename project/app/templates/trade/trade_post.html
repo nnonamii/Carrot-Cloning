@@ -44,6 +44,7 @@
           </div>
           {% else %}
           <div class="button-box">
+            <button id="road_btn" class="orange">길찾기</button>
             <a href="{% url 'chat' post.user post.id %}">
               <button class="orange">채팅하기</button>
             </a>
@@ -67,11 +68,28 @@
         </div>
         {% endblock %}
       </div>
+      <iframe id="road_find" style="display:none;" width="100%" height="700" src="https://map.kakao.com/link/to/수원역,동호로" frameborder="0"></iframe>
+
     </div>
+
   </div>
   {% include 'footer.html' %}
+  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=06b71a5db40aca812f7ae8bff82d58b9&libraries=services"></script>
 
   <script>
+    function toggleRoadFind() {
+      let road_find = document.getElementById('road_find');
+    
+      if (road_find.style.display === 'none') {
+        road_find.style.display = 'block';
+      } else {
+        road_find.style.display = 'none';
+      }
+    }
+    const road_btn = document.getElementById('road_btn');
+    road_btn.addEventListener('click', toggleRoadFind);
+
+ 
     function delete_post() {
       var userConfirmed = confirm("삭제하시겠습니까?");
 

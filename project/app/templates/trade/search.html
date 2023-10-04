@@ -23,13 +23,26 @@
         <div class="full-box trade-box column">
           <div class="flex-box full-box card-container between">
             {% for post in posts %}
-
-            <div class="card-box">
-              <a href="{% url 'trade_post' %}" class="trade-text-link">
-                <div class="card-img">
-                  {% if post.img %}
-                  <img src="" alt="title">
-                  {% endif %}
+                <div class="card-box">
+                  <a href="{% url 'trade_post' post.id %}" class="trade-text-link">
+                    <div class="card-img">
+                      {% if post.images %}
+                        <img src="{{ post.images.url }}" alt="title">
+                      {% endif %}
+                    </div>
+                    <div class="card-info-box">
+                      <h5>{{ post.title }}</h5>
+                      <p class="bold">{{ post.price }}</p>
+                      <p>{{ post.location }}</p>
+                      <div class="flex-box">
+                        <p>조회
+                          {{ post.view_num }}</p>
+                        <p>·</p>
+                        <p>채팅
+                          {{ post.chat_num }}</p>
+                      </div>
+                    </div>
+                  </a>
                 </div>
                 <div class="card-info-box">
                   <h5>title</h5>

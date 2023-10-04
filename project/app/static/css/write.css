@@ -24,6 +24,15 @@ label{
   padding: 12px 0 4px 0;
 }
 
+.img-box {
+  display: flex;
+  flex-direction: column; 
+  justify-content: center; /* 수평 가운데 정렬 */
+  align-items: center; /* 수직 가운데 정렬 */
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
 .img-upload {
   border: 1px solid #dedede;
   width: 240px;
@@ -56,4 +65,20 @@ label{
   color: #fff;
   font-weight: 700;
   padding: 12px 0;
+}
+
+.flex-box {
+  display: flex;
+  flex-direction: row;
+  /* justify-content: space-between;  */
+}
+
+.box-group {
+  flex: 1; /* 동일한 너비로 배치 */
+  margin-right: 20px; /* 입력 필드 간격 설정 */
+}
+
+/* 맨 마지막 .form-group 에 오른쪽 마진을 주지 않기 위한 스타일 */
+.box-group:last-child {
+  margin-right: 0;
 }

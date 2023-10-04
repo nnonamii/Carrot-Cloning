@@ -374,9 +374,32 @@ def jobs(request):
     return render(request, "jobs/jobs.html", {"jobs": top_views_jobs})
 
 
+# def oldcar(request):
+#     top_views_posts = Oldcar.objects.filter(product_sold="N").order_by("-view_num")
+#     return render(request, "oldcar/oldcar.html", {"oldcars": top_views_posts})
+
+
 def oldcar(request):
-    top_views_posts = Oldcar.objects.filter(product_sold="N").order_by("-view_num")
-    return render(request, "oldcar/oldcar.html", {"oldcars": top_views_posts})
+    top_views_oldcar = (
+        Oldcar.objects.filter(product_sold="N")
+        .annotate(
+            view_rank=ExpressionWrapper(-F("view_num"), output_field=IntegerField()),
+            creation_year=Extract("created_at", "year"),
+            creation_month=Extract("created_at", "month"),
+            creation_day=Extract("created_at", "day"),
+            creation_hour=Extract("created_at", "hour"),
+            creation_minute=Extract("created_at", "minute"),
+        )
+        .order_by(
+            "view_rank",
+            "-creation_year",
+            "-creation_month",
+            "-creation_day",
+            "-creation_hour",
+            "-creation_minute",
+        )
+    )
+    return render(request, "oldcar/oldcar.html", {"oldcars": top_views_oldcar})
 
 
 def oldcar_post(request, pk):
@@ -429,7 +452,7 @@ def create_oldcar(request):
 
 
 def stores(request):
-    top_views_stores = Store.objects.all()
+    top_views_stores = Store.objects.order_by("-connexion")
     return render(request, "stores/stores.html", {"stores": top_views_stores})
 
 
@@ -470,8 +493,7 @@ def oldcar_edit(request, id):
             oldcar.images = request.FILES["images"]
         oldcar.save()
         return redirect("oldcar_post", pk=id)
-    return render(request, "oldcar/write.html", {"post": oldcar})
-
+    return render(request, "oldcar/oldcar_write.html", {"oldcar": oldcar})
 
 def oldcar_delete(request, id):
     try:
@@ -481,6 +503,7 @@ def oldcar_delete(request, id):
     except Oldcar.DoesNotExist:
         messages.error(request, "포스팅을 찾을 수 없습니다.")
     return redirect("oldcar")
+
 
 
 def bump_oldcar(request, pk):
@@ -507,10 +530,6 @@ def stores_write(request):
         return redirect("alert", alert_message="동네인증이 필요합니다.")
     except:
         return redirect("login_alert")
-
-
-def stores(request):
-    return render(request, "stores/stores.html")
 
 
 @login_required
@@ -571,7 +590,28 @@ def bump_stores(request, pk):
 
     # 업데이트 후, 해당 게시물의 상세 페이지로 리디렉션
     return redirect("stores_post", pk=pk)
+  
+def make_connexion_store(request, pk):
+    store = get_object_or_404(Store, pk=pk)
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+    
+    if store not in user_profile.favorite_stores.all():
+        store.connexion += 1
+        store.save()
+        user_profile.favorite_stores.add(store)
+    
+    return redirect('stores_post', pk=pk)  # 가게 상세 페이지로 리다이렉트
 
+def remove_connexion_store(request, pk):
+    store = get_object_or_404(Store, pk=pk)
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+    
+    if store in user_profile.favorite_stores.all():
+        store.connexion -= 1
+        store.save()
+        user_profile.favorite_stores.remove(store)
+    
+    return redirect('stores_post', pk=pk)  # 가게 상세 페이지로 리다이렉트
 
 def set_region(request):
     if request.method == "POST":
