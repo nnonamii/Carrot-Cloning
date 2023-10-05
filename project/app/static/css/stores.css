@@ -122,8 +122,8 @@ h1{
 
 .card-img{
   background-color: #292929;
-  height: 200px;
-  width: 200px;
+  height: 180px;
+  width: 180px;
   border-radius: 50%;
   overflow: hidden;
 }
@@ -136,8 +136,8 @@ h1{
 }
 
 .card-info-box{
-  width: 350px;
-  height: 100px;
+  width: 300px;
+  height: 140px;
   overflow: hidden;
   margin-left: 16px;
   display: flex;
