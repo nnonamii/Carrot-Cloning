@@ -14,7 +14,12 @@ nav {
 }
 
 .logo {
-    margin-right: 15px;
+    margin-right: 30px;
+}
+
+#logo {
+    width: 65px;
+    height: 35px;
 }
 
 .nav-buttons {
