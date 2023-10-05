@@ -11,7 +11,7 @@ class Post(models.Model):
     images = models.ImageField(verbose_name="이미지", upload_to="post_images/")
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, to_field="username")
     created_at = models.DateTimeField(verbose_name="작성일자", auto_now_add=True, null=True)
-
+    visible = models.BooleanField(default=True)  # 글의 표시 여부
     product_reserved = models.CharField(verbose_name="예약여부", max_length=1, default="N")
     product_sold = models.CharField(verbose_name="판매여부", max_length=1, default="N")
 
@@ -48,7 +48,8 @@ class UserProfile(models.Model):
     region = models.CharField(max_length=100, null=True)
     region_certification = models.CharField(max_length=1, default="N")
     favorite_stores = models.ManyToManyField(Store)
-
+    blocked_users = models.ManyToManyField(User, related_name='blocked_by', blank=True)
+    
     def __str__(self):
         return f"{self.user.username} Profile"
     

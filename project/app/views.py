@@ -252,6 +252,43 @@ def create_post(request):
             form = PostForm()
     return render(request, "trade/trade_post.html", {"form": form})
 
+@login_required
+def block_user(request, username):
+    if request.method == 'POST':
+        
+        # 현재 사용자의 프로필을 가져옵니다.
+        user_profile = get_object_or_404(UserProfile, user=request.user)
+        
+        # 차단할 사용자를 가져옵니다.
+        blocked_user = get_object_or_404(User, username=username)
+        
+        # 차단한 사용자를 추가합니다.
+        user_profile.blocked_users.add(blocked_user)
+        
+        # 차단한 사용자의 글을 숨깁니다.
+        blocked_user_posts = Post.objects.filter(user=blocked_user)
+        blocked_user_posts.update(visible=False)
+
+    return redirect('trade')  # post_id를 적절히 수정해야 합니다.
+
+@login_required
+def unblock_user(request, username):
+    if request.method == 'POST':
+        
+        # 현재 사용자의 프로필을 가져옵니다.
+        user_profile = get_object_or_404(UserProfile, user=request.user)
+        
+        # 차단을 해제할 사용자를 가져옵니다.
+        unblocked_user = get_object_or_404(User, username=username)
+        
+        # 차단을 해제합니다.
+        user_profile.blocked_users.remove(unblocked_user)
+        
+        # 차단을 해제한 사용자의 글을 다시 표시합니다.
+        unblocked_user_posts = Post.objects.filter(user=unblocked_user)
+        unblocked_user_posts.update(visible=True)
+
+    return redirect('trade')  # post_id를 적절히 수정해야 합니다.
 
 def payments(request, pk):
     post = get_object_or_404(Post, id=pk)
