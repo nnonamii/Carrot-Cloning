@@ -6,7 +6,8 @@ from django.contrib.auth import views as auth_views
 # app_name = "app"
 
 urlpatterns = [
-    path("", views.main, name="main"),
+    path("", views.index, name="index"),
+    path("main", views.main, name="main"),
     path("alert/<str:alert_message>/", views.alert, name="alert"),
     path("login_alert/", views.login_alert, name="login_alert"),
     path("login/", views.custom_login, name="login"),
