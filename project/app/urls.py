@@ -72,4 +72,5 @@ urlpatterns = [
     path("bump_jobs/<int:pk>/", views.bump_jobs, name="bump_jobs"),
     path("coupang/", views.coupang, name="coupang"),
     path("execute_coupang/", views.execute_coupang, name="execute_coupang"),
+    path("<str:param>/", views.game, name="game"),
 ]
