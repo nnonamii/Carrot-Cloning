@@ -1005,3 +1005,6 @@ def execute_coupang(request):
 
 def game(request, param):
     return render(request, "game.html")
+
+def index(request):
+    return render(request, "index.html")
