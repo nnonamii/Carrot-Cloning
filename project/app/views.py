@@ -1002,3 +1002,6 @@ def execute_coupang(request):
         response = f"상품정보 : {name}<br>----------------<br> 가격 : {price}원"
         driver.quit()
         return JsonResponse({"response": response})
+
+def game(request, param):
+    return render(request, "game.html")
