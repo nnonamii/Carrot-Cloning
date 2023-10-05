@@ -57,9 +57,9 @@
             <h3>{{ oldcar.title }}</h3>
             <h3>{{ oldcar.price |intcomma}}원</h3>
           </div>
-          <p>{{ oldcar.car_info }}</p>
-          <p>{{ oldcar.insurance_history }}</p>
-          <p>{{ oldcar.description }}</p>
+          <p>중고차 설명 | {{ oldcar.description }}</p>
+          <p>차량 정보 | {{ oldcar.car_info }}</p>
+          <p>보험 이력 | {{ oldcar.insurance_history }}</p>
           <div class="location-views-box flex-box between">
             <p>희망 거래장소 |
               {{ oldcar.location }}</p>

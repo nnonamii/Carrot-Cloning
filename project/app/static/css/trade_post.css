@@ -66,6 +66,15 @@ h3{
     border-radius: 8px;
 }
 
+.button-box .red {
+    background-color: #FF0000;
+    color: #fff;
+    font-weight: 700;
+    padding: 12px 32px;
+    border: none;
+    border-radius: 8px;
+}
+
 button:hover{
     opacity: 0.8;
 }
@@ -85,4 +94,43 @@ hr{
 .location-views-box{
     opacity: 0.5;
     margin-top: 40px;
+}
+
+.block-user-box{
+    display: flex;
+    flex-direction: row;
+}
+
+.block-user-box .orange {
+    background-color: #fa6616;
+    color: #fff;
+    font-weight: 700;
+    padding: 12px 32px;
+    border: none;
+    border-radius: 8px;
+    margin-right: 10px;
+}
+
+.block-user-box .red {
+    background-color: #FF0000;
+    color: #fff;
+    font-weight: 700;
+    padding: 12px 32px;
+    border: none;
+    border-radius: 8px;
+}
+
+.unblock-user-box{
+    display: flex;
+    flex-direction: column;
+}
+
+.unblock-user-box .red {
+    background-color: #FF0000;
+    color: #fff;
+    font-weight: 700;
+    padding: 12px 32px;
+    border: none;
+    border-radius: 8px;
+    margin-top: 20px;
 }

@@ -21,6 +21,7 @@
     <div class="container column">
       <div class="post-box">
         {% block content %}
+        {% if post.visible %} 
         {% comment %} {% if post.images %} {% endcomment %}
         <img src="{{ post.images.url }}" alt="{{ post.title }}" class="block-box">
         {% comment %} {% endif %} {% endcomment %}
@@ -43,14 +44,17 @@
             </a>
           </div>
           {% else %}
-          <div class="button-box">
+          <div class="block-user-box">
             <button id="road_btn" class="orange">길찾기</button>
             <a href="{% url 'chat' post.user post.id %}">
               <button class="orange">채팅하기</button>
             </a>
+            <form method="post" action="{% url 'block_user' post.user.username%}">
+              {% csrf_token %}
+              <button class="red" type="submit">차단</button>
+            </form>
           </div>
           {% endif %}
-
         </div>
         <hr class="line">
         <div class="post-info-box">
@@ -66,6 +70,15 @@
               {{ post.view_num }}</p>
           </div>
         </div>
+        {% else %}
+        <div class="unblock-user-box">
+          <p>이 글은 사용자가 차단한 유저의 글입니다.</p>
+          <form method="post" action="{% url 'unblock_user' post.user.username%}">
+           {% csrf_token %}
+           <button class="red" type="submit">차단 해제</button>
+          </form>
+        </div>
+        {% endif %}
         {% endblock %}
       </div>
       <iframe id="road_find" style="display:none;" width="100%" height="700" src="https://map.kakao.com/link/to/수원역,동호로" frameborder="0"></iframe>
