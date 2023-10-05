@@ -61,7 +61,7 @@
             <!-- 채팅방리스트 -->
             {% for room, p in chat_room_list %}
             <div class="check-box flex-box chat-box between"
-              onclick="location.href='{% url 'chat' room.user.username p.id %}'" {% if p.id==post.id %}
+              onclick="location.href='{% url 'chat' room.user.username p.id %}'" {% if p.id== room.post.id %}
               style="background-color:#fa6616;" {% endif %}>
               <div>
                 <div class="flex-box">
