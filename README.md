@@ -39,43 +39,20 @@
 
 ## 3. 서비스 화면 🎥
 
-### Main
----
-<div align="center">
-  
-  ![화면 캡처 2023-09-21 163434](https://github.com/hyung000620/teletubbies/assets/81272766/7949794b-58f3-491c-99e7-9fa242580970)
-
-</div>
+### Main  
+![화면 캡처 2023-09-21 163434](https://github.com/hyung000620/teletubbies/assets/81272766/7949794b-58f3-491c-99e7-9fa242580970)
 
 ### Post
----
-<div align="center">
-  
-  ![화면 캡처 2023-09-21 163504](https://github.com/hyung000620/teletubbies/assets/81272766/e728fd70-5355-44d3-b214-5ef2407dcc48)
-  
-</div>
+![화면 캡처 2023-09-21 163504](https://github.com/hyung000620/teletubbies/assets/81272766/e728fd70-5355-44d3-b214-5ef2407dcc48)
 
 ### Write
----
-<div align="center">
-  
 ![화면 캡처 2023-09-21 163624](https://github.com/hyung000620/teletubbies/assets/81272766/46623727-33b8-4379-8f7f-3012f468df90)
 
-</div>
-
 ### Login
----
-<div align="center">
-  
-  ![화면 캡처 2023-09-21 163410](https://github.com/hyung000620/teletubbies/assets/81272766/272c5bc6-d7ec-4b7d-9908-ae7b59592e7f)
-
-</div>
+![화면 캡처 2023-09-21 163410](https://github.com/hyung000620/teletubbies/assets/81272766/272c5bc6-d7ec-4b7d-9908-ae7b59592e7f)
 
 ### Location
----
-<div align="center">
-  
-  ![화면 캡처 2023-09-21 163705](https://github.com/hyung000620/teletubbies/assets/81272766/c1d0da92-74d5-45d0-b343-3423d8ce449c)
+![화면 캡처 2023-09-21 163705](https://github.com/hyung000620/teletubbies/assets/81272766/c1d0da92-74d5-45d0-b343-3423d8ce449c)
 
 <br />
 <div id="4"></div>
